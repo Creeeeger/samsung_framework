@@ -14,24 +14,22 @@ import java.util.HashMap;
 /* loaded from: classes.dex */
 public class SemInputDeviceMotionHelper {
     private static final String TAG = "SemInputMotionHelper";
-    private final HashMap<SemInputConstants.Device, Boolean> checkTables;
     private SemInputCommandInterface commandOperator;
     private SemInputExternal.IExternalEventRegister externalEventRegister;
     private final Handler mainHandler;
     private final HashMap<SemInputConstants.Device, SemInputDeviceRawdataService> rawdataServices = new HashMap<>();
     private final HashMap<SemInputConstants.Device, SemInputMotionController> motionControllers = new HashMap<>();
+    private final HashMap<SemInputConstants.Device, Boolean> checkTables = new HashMap<>();
 
     public SemInputDeviceMotionHelper(Handler mainHandler, SemInputExternal.IExternalEventRegister externalRegister, SemInputCommandInterface commandOperator) {
-        HashMap<SemInputConstants.Device, Boolean> hashMap = new HashMap<>();
-        this.checkTables = hashMap;
         this.externalEventRegister = null;
         this.commandOperator = null;
         this.mainHandler = mainHandler;
         this.externalEventRegister = externalRegister;
         this.commandOperator = commandOperator;
-        hashMap.put(SemInputConstants.Device.DEFAULT_TSP, false);
+        this.checkTables.put(SemInputConstants.Device.DEFAULT_TSP, false);
         if (!SemInputFeatures.IS_WEAROS) {
-            hashMap.put(SemInputConstants.Device.EXTRA_TSP, false);
+            this.checkTables.put(SemInputConstants.Device.EXTRA_TSP, false);
         }
     }
 
@@ -63,33 +61,11 @@ public class SemInputDeviceMotionHelper {
         }
     }
 
-    /* renamed from: com.samsung.android.hardware.secinputdev.SemInputDeviceMotionHelper$1, reason: invalid class name */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$MotionType;
-
-        static {
-            int[] iArr = new int[SemInputConstants.MotionType.values().length];
-            $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$MotionType = iArr;
-            try {
-                iArr[SemInputConstants.MotionType.NONE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$MotionType[SemInputConstants.MotionType.CALLBACK.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$MotionType[SemInputConstants.MotionType.APD.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-        }
-    }
-
     public boolean registerListener(IBinder binder, SemInputConstants.MotionType motionType, String client) {
         boolean result = false;
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$MotionType[motionType.ordinal()]) {
-            case 1:
-            case 2:
+        switch (motionType) {
+            case NONE:
+            case CALLBACK:
                 for (SemInputDeviceRawdataService rawdataService : this.rawdataServices.values()) {
                     result |= rawdataService.registerCallback(binder, client);
                 }
@@ -97,7 +73,7 @@ public class SemInputDeviceMotionHelper {
                     Log.i(TAG, "registerListener(CALLBACK): maybe not supported or not yet enabled");
                 }
                 return result;
-            case 3:
+            case APD:
                 for (SemInputMotionController motionController : this.motionControllers.values()) {
                     result |= motionController.enableMotion(motionType, client, binder);
                 }
@@ -113,9 +89,9 @@ public class SemInputDeviceMotionHelper {
 
     public boolean unregisterListener(IBinder binder, SemInputConstants.MotionType motionType, String client) {
         boolean result = false;
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$MotionType[motionType.ordinal()]) {
-            case 1:
-            case 2:
+        switch (motionType) {
+            case NONE:
+            case CALLBACK:
                 for (SemInputDeviceRawdataService rawdataService : this.rawdataServices.values()) {
                     result |= rawdataService.unregisterCallback(binder, client);
                 }
@@ -123,7 +99,7 @@ public class SemInputDeviceMotionHelper {
                     Log.i(TAG, "unregisterListener(CALLBACK): maybe not supported or not yet enabled");
                 }
                 return result;
-            case 3:
+            case APD:
                 for (SemInputMotionController motionController : this.motionControllers.values()) {
                     result |= motionController.disableMotion(motionType, client, binder);
                 }
@@ -197,7 +173,7 @@ public class SemInputDeviceMotionHelper {
         final SemInputDeviceRawdataService rawdataService = this.rawdataServices.get(device);
         if (rawdataService != null) {
             if (useHandler) {
-                this.mainHandler.post(new Runnable() { // from class: com.samsung.android.hardware.secinputdev.SemInputDeviceMotionHelper$$ExternalSyntheticLambda1
+                this.mainHandler.post(new Runnable() { // from class: com.samsung.android.hardware.secinputdev.SemInputDeviceMotionHelper$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         SemInputDeviceRawdataService.this.pauseService();
@@ -213,7 +189,7 @@ public class SemInputDeviceMotionHelper {
         final SemInputDeviceRawdataService rawdataService = this.rawdataServices.get(device);
         if (rawdataService != null) {
             if (useHandler) {
-                this.mainHandler.post(new Runnable() { // from class: com.samsung.android.hardware.secinputdev.SemInputDeviceMotionHelper$$ExternalSyntheticLambda0
+                this.mainHandler.post(new Runnable() { // from class: com.samsung.android.hardware.secinputdev.SemInputDeviceMotionHelper$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         SemInputDeviceRawdataService.this.restartService();

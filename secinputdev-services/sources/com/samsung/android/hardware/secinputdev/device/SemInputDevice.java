@@ -20,38 +20,29 @@ import java.util.concurrent.locks.ReentrantLock;
 /* loaded from: classes.dex */
 public abstract class SemInputDevice {
     private static final String STATIC_TAG = "SemInputDevice";
-    private static Lock lock;
-    private static boolean onRecovery;
-    private static Condition recovery;
-    private static ExecutorService staticExecutorService = null;
     protected final String TAG;
     protected final int devid;
     private final ExecutorService executorService;
     protected final String name;
     protected final int supportFeature;
     protected final SysinputHALInterface sysinputHAL;
+    private static ExecutorService staticExecutorService = null;
+    private static Lock lock = new ReentrantLock();
+    private static Condition recovery = lock.newCondition();
+    private static boolean onRecovery = false;
     protected final HashSet<String> cmdlistSet = new HashSet<>();
     private final List<String> taskQueue = new LinkedList();
     protected List<Runnable> pendingQueue = null;
     private boolean needPending = false;
 
-    static {
-        ReentrantLock reentrantLock = new ReentrantLock();
-        lock = reentrantLock;
-        recovery = reentrantLock.newCondition();
-        onRecovery = false;
-    }
-
     public SemInputDevice(String name, int devid, int feature, String cmdlist) {
-        String str = "SemInputDevice:" + name;
-        this.TAG = str;
+        this.TAG = "SemInputDevice:" + name;
         this.name = name;
         this.devid = devid;
         this.supportFeature = feature;
         splitCommandList(cmdlist);
-        SysinputHALInterface connectHAL = SysinputHALFactory.connectHAL();
-        this.sysinputHAL = connectHAL;
-        if (Float.compare(connectHAL.getVersion(), 2.0f) >= 0) {
+        this.sysinputHAL = SysinputHALFactory.connectHAL();
+        if (Float.compare(this.sysinputHAL.getVersion(), 2.0f) >= 0) {
             this.executorService = Executors.newSingleThreadExecutor();
         } else {
             if (staticExecutorService == null) {
@@ -59,7 +50,7 @@ public abstract class SemInputDevice {
             }
             this.executorService = null;
         }
-        Log.d(str, "create " + this);
+        Log.d(this.TAG, "create " + this);
     }
 
     public static void setRecoveryState(boolean onRecovery2) {
@@ -142,9 +133,8 @@ public abstract class SemInputDevice {
     }
 
     protected void runOnThread(Runnable runnable, SemInputCommandService.Result result) {
-        List<Runnable> list = this.pendingQueue;
-        if (list != null) {
-            synchronized (list) {
+        if (this.pendingQueue != null) {
+            synchronized (this.pendingQueue) {
                 if (this.needPending && runnable.toString().contains("SetProperty")) {
                     Log.e(this.TAG, "INCELL: skip " + runnable.toString());
                     result.set(2);
@@ -154,28 +144,20 @@ public abstract class SemInputDevice {
             }
         }
         addTask(runnable);
-        ExecutorService executorService = this.executorService;
-        if (executorService != null) {
-            executorService.submit(runnable);
-            return;
-        }
-        ExecutorService executorService2 = staticExecutorService;
-        if (executorService2 != null) {
-            executorService2.submit(runnable);
+        if (this.executorService != null) {
+            this.executorService.submit(runnable);
+        } else if (staticExecutorService != null) {
+            staticExecutorService.submit(runnable);
         }
     }
 
     protected void runAndWaitOnThread(Runnable runnable, SemInputCommandService.Result result) {
         try {
             addTask(runnable);
-            ExecutorService executorService = this.executorService;
-            if (executorService != null) {
-                executorService.submit(runnable).get();
-            } else {
-                ExecutorService executorService2 = staticExecutorService;
-                if (executorService2 != null) {
-                    executorService2.submit(runnable).get();
-                }
+            if (this.executorService != null) {
+                this.executorService.submit(runnable).get();
+            } else if (staticExecutorService != null) {
+                staticExecutorService.submit(runnable).get();
             }
         } catch (Exception e) {
             SemInputDeviceManagerService.loggingException(this.TAG, "runAndWaitOnThread", e);
@@ -332,9 +314,8 @@ public abstract class SemInputDevice {
             Log.i(this.TAG, "INCELL: pending start");
         }
         runOnThread(new ActivateTask(enable, isEarly, result), result);
-        List<Runnable> list = this.pendingQueue;
-        if (list != null && this.needPending && !isEarly) {
-            synchronized (list) {
+        if (this.pendingQueue != null && this.needPending && !isEarly) {
+            synchronized (this.pendingQueue) {
                 this.needPending = false;
                 Log.i(this.TAG, "INCELL: pending end");
                 for (Runnable runnable : this.pendingQueue) {

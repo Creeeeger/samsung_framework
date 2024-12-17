@@ -3,44 +3,10 @@ package com.samsung.android.hardware.secinputdev.external;
 /* loaded from: classes.dex */
 public interface SemInputExternal {
 
-    public interface IBroadcastReceiver {
-        void onBatteryChanged(int i, int i2);
-
-        void onBatteryTxIdChanged(int i);
-
-        void onCoverAttached(boolean z, int i);
-
-        void onGameMode(String str, String str2);
-
-        void onLazybootCompleted();
-
-        void onRFDetected(boolean z);
-
-        void onShutdown();
-
-        void onUserSwitched();
-    }
-
     public interface IExternalEventRegister {
         boolean registerBroadcastReceiver(Event event, IBroadcastReceiver iBroadcastReceiver);
 
         boolean registerServiceListener(Event event, IServiceListener iServiceListener);
-    }
-
-    public interface IServiceListener {
-        void onBodyDetected(int i);
-
-        void onDesktopModeStateChanged(int i);
-
-        void onDisplayChanged(int i);
-
-        void onDisplayStateChanged(boolean z, int i, int i2, int i3);
-
-        void onFoldStateChanged(boolean z);
-
-        void onLpScanSensorChanged(int i);
-
-        void onSemUEvent(String str);
     }
 
     public enum Event {
@@ -68,6 +34,55 @@ public interface SemInputExternal {
 
         Event(int event) {
             this.event = event;
+        }
+    }
+
+    public interface IServiceListener {
+        default void onSemUEvent(String result) {
+        }
+
+        default void onDisplayStateChanged(boolean isEarly, int stateLogical, int statePhysical, int displayType) {
+        }
+
+        default void onDisplayChanged(int rotation) {
+        }
+
+        default void onFoldStateChanged(boolean folded) {
+        }
+
+        default void onDesktopModeStateChanged(int mode) {
+        }
+
+        default void onLpScanSensorChanged(int mode) {
+        }
+
+        default void onBodyDetected(int mode) {
+        }
+    }
+
+    public interface IBroadcastReceiver {
+        default void onBatteryChanged(int status, int type) {
+        }
+
+        default void onBatteryTxIdChanged(int tx_id) {
+        }
+
+        default void onShutdown() {
+        }
+
+        default void onLazybootCompleted() {
+        }
+
+        default void onGameMode(String gameMode, String scanRate, String fastResponse) {
+        }
+
+        default void onCoverAttached(boolean attached, int cover_type) {
+        }
+
+        default void onUserSwitched() {
+        }
+
+        default void onRFDetected(boolean on) {
         }
     }
 }

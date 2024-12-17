@@ -97,38 +97,38 @@ public interface ISehSysInputCallback extends IInterface {
             if (code >= 1 && code <= TRANSACTION_getInterfaceVersion) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == TRANSACTION_getInterfaceVersion) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == TRANSACTION_getInterfaceHash) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case TRANSACTION_getInterfaceHash /* 16777214 */:
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onReportInformation(_arg0, _arg1);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case TRANSACTION_getInterfaceVersion /* 16777215 */:
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int[] _arg2 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onReportRawData(_arg02, _arg12, _arg2);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case 1598968902:
-                    reply.writeString(descriptor);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onReportInformation(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int[] _arg2 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onReportRawData(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 

@@ -1,57 +1,76 @@
 package com.samsung.android.hardware.secinputdev.taas;
 
-import android.content.Context;
-import android.os.SemHqmManager;
 import android.util.Log;
 import com.samsung.android.hardware.secinputdev.SemInputDeviceManagerService;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.json.JSONObject;
 
 /* loaded from: classes.dex */
 public class SemInputDeviceHqmHelper {
     private static final String[] BIG_DATA = {"CASA", "CASB"};
-    private static final String COMONENT_VER = "0.0";
-    private static final String COMPONENT_ID = "TSP";
-    private static final String COM_MANUFACTURE = "sec";
-    private static final String DEV_CUSTOM_DATA_SET = "";
-    private static final String HIT_TYPE = "sm";
-    private static final int MS_PER_HOUR = 3600000;
-    private static final int PERIOD_LOGGING = 86400000;
-    private static final String PRI_CUSTOM_DATA_SET = "";
+    private static final int HQMCASEALISTITEMCOUNT = 5;
+    private static final int HQMCASEALISTLENGTH = 1000;
     private static final String TAG = "SemInputDeviceHqmHelper";
-    private static final String TSP_FEATURE = "TAAS";
-    private static SemInputDeviceHqmHelper sInstance;
-    private SemHqmManager mSemHqmManager;
 
-    private SemInputDeviceHqmHelper(Context context) {
-        this.mSemHqmManager = (SemHqmManager) context.getSystemService("HqmManagerService");
-    }
-
-    public static SemInputDeviceHqmHelper getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new SemInputDeviceHqmHelper(context);
+    private String printTopCount(SemInputDeviceHqmData data) {
+        String strCaseAHqmList;
+        String strListResult = "";
+        Map<String, Integer> caseAMap = data.getCaseAMap();
+        Map<String, Integer> sortedMap = (Map) caseAMap.entrySet().stream().sorted(Map.Entry.comparingByValue().reversed()).limit(5L).collect(Collectors.toMap(new Function() { // from class: com.samsung.android.hardware.secinputdev.taas.SemInputDeviceHqmHelper$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                return (String) ((Map.Entry) obj).getKey();
+            }
+        }, new Function() { // from class: com.samsung.android.hardware.secinputdev.taas.SemInputDeviceHqmHelper$$ExternalSyntheticLambda1
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                return (Integer) ((Map.Entry) obj).getValue();
+            }
+        }, new BinaryOperator() { // from class: com.samsung.android.hardware.secinputdev.taas.SemInputDeviceHqmHelper$$ExternalSyntheticLambda2
+            @Override // java.util.function.BiFunction
+            public final Object apply(Object obj, Object obj2) {
+                return SemInputDeviceHqmHelper.lambda$printTopCount$0((Integer) obj, (Integer) obj2);
+            }
+        }, new Supplier() { // from class: com.samsung.android.hardware.secinputdev.taas.SemInputDeviceHqmHelper$$ExternalSyntheticLambda3
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                return new LinkedHashMap();
+            }
+        }));
+        for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
+            strListResult = strListResult + entry.getValue() + "," + entry.getKey() + ";";
         }
-        return sInstance;
+        if (strListResult == null || strListResult.isEmpty()) {
+            strCaseAHqmList = "\"CSAL\":\"\"";
+        } else {
+            String strListResult2 = strListResult.replaceAll(".$", "");
+            strCaseAHqmList = "\"CSAL\":\"" + strListResult2.substring(0, Math.min(strListResult2.length(), 998)) + "\"";
+        }
+        Log.d(TAG, "Print HQM DATA strCaseAHqmList(" + strCaseAHqmList + ")");
+        return strCaseAHqmList;
     }
 
-    public void sendHqmTspData(SemInputDeviceHqmData data) {
+    static /* synthetic */ Integer lambda$printTopCount$0(Integer e1, Integer e2) {
+        return e1;
+    }
+
+    public String sendHqmTspData(SemInputDeviceHqmData data) {
         ArrayList<String> types = new ArrayList<>();
         ArrayList<String> values = new ArrayList<>();
-        int i = 0;
-        while (true) {
-            String[] strArr = BIG_DATA;
-            if (i < strArr.length) {
-                String strVal = Integer.toString(data.get(strArr[i]));
-                if (strVal != null) {
-                    types.add(strArr[i]);
-                    values.add(strVal);
-                }
-                i++;
-            } else {
-                sendLoggingDataToHQM(types, values);
-                return;
+        for (int i = 0; i < BIG_DATA.length; i++) {
+            String strVal = Integer.toString(data.get(BIG_DATA[i]));
+            if (strVal != null) {
+                types.add(BIG_DATA[i]);
+                values.add(strVal);
             }
         }
+        return sendLoggingDataToHQM(types, values, data);
     }
 
     private String convertToBigDataFormat(ArrayList<String> types, ArrayList<String> values) {
@@ -68,15 +87,12 @@ public class SemInputDeviceHqmHelper {
         }
     }
 
-    private void sendLoggingDataToHQM(ArrayList<String> types, ArrayList<String> values) {
+    private String sendLoggingDataToHQM(ArrayList<String> types, ArrayList<String> values, SemInputDeviceHqmData data) {
         String basic_customDataSet = convertToBigDataFormat(types, values);
         if (basic_customDataSet == null) {
-            return;
+            return "null";
         }
-        String basic_customDataSet2 = basic_customDataSet.replaceAll("\\{", "").replaceAll("\\}", "");
-        if (this.mSemHqmManager != null) {
-            Log.d(TAG, "sendLoggingDataToHQM() Server update !!! basic_custom " + basic_customDataSet2);
-            this.mSemHqmManager.sendHWParamToHQM(0, COMPONENT_ID, TSP_FEATURE, HIT_TYPE, COMONENT_VER, COM_MANUFACTURE, "", basic_customDataSet2, "");
-        }
+        String strHqmResultVal = basic_customDataSet.replaceAll("\\{", "").replaceAll("\\}", "") + "," + printTopCount(data);
+        return strHqmResultVal;
     }
 }

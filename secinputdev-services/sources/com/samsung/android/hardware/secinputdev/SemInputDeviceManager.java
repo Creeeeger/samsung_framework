@@ -100,6 +100,7 @@ public class SemInputDeviceManager {
     public static final int SUPPORT_RAWDATA_MOTION_PALM = 1048576;
     public static final int SUPPORT_RAWDATA_MOTION_PALM_SWIPE = 4194304;
     public static final int SUPPORT_RAWDATA_MOTION_POCKET_DETECT = 524288;
+    public static final int SUPPORT_RAWDATA_TRANSFER = 262144;
     public static final int SUPPORT_RR120 = 4;
     public static final int SUPPORT_SYSINPUT_ENABLED = 32;
     public static final int SUPPORT_VRR = 8;
@@ -119,13 +120,12 @@ public class SemInputDeviceManager {
     }
 
     public int getSupportDevice(int devid) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "getSupportDevice: service is not enabled");
             return -1;
         }
         try {
-            int ret = iSemInputDeviceManager.getSupportDevice(SemInputConstants.Device.getFromInt(devid));
+            int ret = this.service.getSupportDevice(SemInputConstants.Device.getFromInt(devid));
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -198,13 +198,12 @@ public class SemInputDeviceManager {
     }
 
     public String getCommandList(int devid) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "getCommandList: service is not enabled");
             return "NG";
         }
         try {
-            String ret = iSemInputDeviceManager.getCommandList(SemInputConstants.Device.getFromInt(devid));
+            String ret = this.service.getCommandList(SemInputConstants.Device.getFromInt(devid));
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -236,13 +235,12 @@ public class SemInputDeviceManager {
     }
 
     public String getKeyPressStateAll() {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "getKeyPressStateAll: service is not enabled");
             return "";
         }
         try {
-            String keystate = iSemInputDeviceManager.getKeyPressStateAll();
+            String keystate = this.service.getKeyPressStateAll();
             return keystate;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -251,13 +249,12 @@ public class SemInputDeviceManager {
     }
 
     public boolean isKeyPressedByKeycode(int keycode) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "isKeyPressedByKeycode: service is not enabled");
             return false;
         }
         try {
-            boolean keystate = iSemInputDeviceManager.isKeyPressedByKeycode(keycode);
+            boolean keystate = this.service.isKeyPressedByKeycode(keycode);
             return keystate;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -303,6 +300,10 @@ public class SemInputDeviceManager {
         return setProperty(SemInputConstants.Command.AOD_RECT, w + "," + h + "," + x + "," + y);
     }
 
+    public int setAodNotiRect(int w, int h, int x, int y) {
+        return setProperty(SemInputConstants.Command.AOD_NOTI_RECT, w + "," + h + "," + x + "," + y);
+    }
+
     public int setAodEnable(int mode) {
         return setProperty(SemInputConstants.Command.AOD, mode + "");
     }
@@ -322,9 +323,9 @@ public class SemInputDeviceManager {
         }
     }
 
-    public int setFodEnable(int mode, int pressFast, int strictMode) {
+    public int setFodEnable(int mode, int pressFast, int strictMode, int control) {
         if (mode == 1) {
-            return setProperty(SemInputConstants.Command.FOD, mode + "," + pressFast + "," + strictMode);
+            return setProperty(SemInputConstants.Command.FOD, mode + "," + pressFast + "," + strictMode + "," + control);
         }
         return setProperty(SemInputConstants.Command.FOD, mode + "");
     }
@@ -371,13 +372,12 @@ public class SemInputDeviceManager {
     }
 
     public int getTspSupportFeature(int devid) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "getTspSupportFeature: service is not enabled");
             return 0;
         }
         try {
-            int ret = iSemInputDeviceManager.getTspSupportFeature(SemInputConstants.Device.getFromInt(devid));
+            int ret = this.service.getTspSupportFeature(SemInputConstants.Device.getFromInt(devid));
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -455,13 +455,12 @@ public class SemInputDeviceManager {
     }
 
     public int getDeviceEnabled(int devid) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "getDeviceEnabled: service is not enabled");
             return -1;
         }
         try {
-            int ret = iSemInputDeviceManager.getDeviceEnabled(SemInputConstants.Device.getFromInt(devid));
+            int ret = this.service.getDeviceEnabled(SemInputConstants.Device.getFromInt(devid));
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -470,13 +469,12 @@ public class SemInputDeviceManager {
     }
 
     public boolean registerListener(int type, String client) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "registerListener: service is not enabled");
             return false;
         }
         try {
-            boolean ret = iSemInputDeviceManager.registerListener(null, type, client);
+            boolean ret = this.service.registerListener(null, type, client);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -485,13 +483,12 @@ public class SemInputDeviceManager {
     }
 
     public boolean unregisterListener(int type, String client) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "unregisterListener: service is not enabled");
             return false;
         }
         try {
-            boolean ret = iSemInputDeviceManager.unregisterListener(null, type, client);
+            boolean ret = this.service.unregisterListener(null, type, client);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -500,13 +497,12 @@ public class SemInputDeviceManager {
     }
 
     public boolean registerListener(IBinder binder, int type, String client) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "registerListener: service is not enabled");
             return false;
         }
         try {
-            boolean ret = iSemInputDeviceManager.registerListener(binder, type, client);
+            boolean ret = this.service.registerListener(binder, type, client);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -515,13 +511,12 @@ public class SemInputDeviceManager {
     }
 
     public boolean unregisterListener(IBinder binder, int type, String client) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "unregisterListener: service is not enabled");
             return false;
         }
         try {
-            boolean ret = iSemInputDeviceManager.unregisterListener(binder, type, client);
+            boolean ret = this.service.unregisterListener(binder, type, client);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -530,13 +525,12 @@ public class SemInputDeviceManager {
     }
 
     public int sendRawdataTsp(int devid, int[] data) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "sendRawdataTsp: service is not enabled");
             return -1;
         }
         try {
-            int ret = iSemInputDeviceManager.sendRawdataTsp(SemInputConstants.Device.getFromInt(devid), data);
+            int ret = this.service.sendRawdataTsp(SemInputConstants.Device.getFromInt(devid), data);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -545,13 +539,12 @@ public class SemInputDeviceManager {
     }
 
     public boolean isSupportMotion(String type) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "isSupportMotion: service is not enabled");
             return false;
         }
         try {
-            boolean ret = iSemInputDeviceManager.isSupportMotion(type);
+            boolean ret = this.service.isSupportMotion(type);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -564,13 +557,12 @@ public class SemInputDeviceManager {
     }
 
     public int enableMotion(String type, boolean enable, String client) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "enableMotion: service is not enabled");
             return -1;
         }
         try {
-            int ret = iSemInputDeviceManager.enableMotion(type, enable, client);
+            int ret = this.service.enableMotion(type, enable, client);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -583,13 +575,12 @@ public class SemInputDeviceManager {
     }
 
     public int setMotionControl(String subtype, int control, String client) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "setMotionControl: service is not enabled");
             return -1;
         }
         try {
-            int ret = iSemInputDeviceManager.setMotionControl(subtype, control, client);
+            int ret = this.service.setMotionControl(subtype, control, client);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -598,13 +589,12 @@ public class SemInputDeviceManager {
     }
 
     public int isEnableMotion(String type, String client) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "isEnableMotion: service is not enabled");
             return -1;
         }
         try {
-            int ret = iSemInputDeviceManager.isEnableMotion(type, client);
+            int ret = this.service.isEnableMotion(type, client);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);
@@ -617,13 +607,12 @@ public class SemInputDeviceManager {
     }
 
     public int getMotionControl(String subtype, String client) {
-        ISemInputDeviceManager iSemInputDeviceManager = this.service;
-        if (iSemInputDeviceManager == null) {
+        if (this.service == null) {
             Log.e(TAG, "getMotionControl: service is not enabled");
             return -1;
         }
         try {
-            int ret = iSemInputDeviceManager.getMotionControl(subtype, client);
+            int ret = this.service.getMotionControl(subtype, client);
             return ret;
         } catch (Exception e) {
             Log.e(TAG, "Failed to call interface: ", e);

@@ -31,9 +31,8 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
     private synchronized ISehSysInputDev getService() {
         if (this.halService == null) {
             try {
-                ISehSysInputDev service = ISehSysInputDev.getService();
-                this.halService = service;
-                if (service == null) {
+                this.halService = ISehSysInputDev.getService();
+                if (this.halService == null) {
                     Log.w(this.TAG, "getService: halService is null");
                     return null;
                 }
@@ -41,9 +40,8 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 if (getClass().getSimpleName().equals(this.TAG)) {
                     HALDeathReceiver deathReceiver = new HALDeathReceiver();
                     try {
-                        ISehSysInputDev iSehSysInputDev = this.halService;
-                        if (iSehSysInputDev != null) {
-                            iSehSysInputDev.linkToDeath(deathReceiver, 41L);
+                        if (this.halService != null) {
+                            this.halService.linkToDeath(deathReceiver, 41L);
                             Log.i(this.TAG, "getService: register linkToDeath");
                         }
                     } catch (Exception e) {
@@ -77,10 +75,10 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
     }
 
     protected synchronized void setService(ISehSysInputDev halService) {
-        ISehSysInputDev tempService = this.halService;
-        if (tempService == null) {
+        if (this.halService == null) {
             this.halService = halService;
         } else {
+            ISehSysInputDev tempService = this.halService;
             synchronized (tempService) {
                 try {
                     this.halService = halService;
@@ -99,11 +97,10 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
     }
 
     protected synchronized boolean isSameService(ISehSysInputDev halService) {
-        ISehSysInputDev iSehSysInputDev = this.halService;
-        if (iSehSysInputDev == null) {
+        if (this.halService == null) {
             return false;
         }
-        synchronized (iSehSysInputDev) {
+        synchronized (this.halService) {
             try {
                 if (this.halService == halService) {
                     return true;
@@ -190,7 +187,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "";
             }
             synchronized (hal) {
-                hal.getKeyCodePressed(keycode, new ISehSysInputDev.getKeyCodePressedCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda5
+                hal.getKeyCodePressed(keycode, new ISehSysInputDev.getKeyCodePressedCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda8
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getKeyCodePressedCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getKeyState$0(keycode, list, i, str);
@@ -233,7 +230,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.runTspCmd(devid, cmdname, new ISehSysInputDev.runTspCmdCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda8
+                hal.runTspCmd(devid, cmdname, new ISehSysInputDev.runTspCmdCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda5
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.runTspCmdCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$runTspCmd$1(devid, list, i, str);
@@ -284,48 +281,10 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
         return -5;
     }
 
-    /* renamed from: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$1, reason: invalid class name */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property;
-
-        static {
-            int[] iArr = new int[SemInputConstants.Property.values().length];
-            $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property = iArr;
-            try {
-                iArr[SemInputConstants.Property.FEATURE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property[SemInputConstants.Property.CMD_LIST.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property[SemInputConstants.Property.SCRUB_POS.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property[SemInputConstants.Property.FOD_INFO.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property[SemInputConstants.Property.FOD_POS.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property[SemInputConstants.Property.AOD_ACTIVE_AREA.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property[SemInputConstants.Property.EPEN_POS.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
-        }
-    }
-
     @Override // com.samsung.android.hardware.secinputdev.hal.SysinputHALInterface
     public String getProperty(int devid, SemInputConstants.Property property) {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Property[property.ordinal()]) {
-            case 1:
+        switch (property) {
+            case FEATURE:
                 if (SemInputDeviceManagerService.isDevidTsp(devid)) {
                     return getTspSupportFeature(devid);
                 }
@@ -333,7 +292,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                     return getSpenSupportFeature();
                 }
                 break;
-            case 2:
+            case CMD_LIST:
                 if (SemInputDeviceManagerService.isDevidTsp(devid)) {
                     return getTspCommandList(devid);
                 }
@@ -341,27 +300,27 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                     return getSpenCommandList();
                 }
                 break;
-            case 3:
+            case SCRUB_POS:
                 if (SemInputDeviceManagerService.isDevidTsp(devid)) {
                     return getTspScrubPosition(devid);
                 }
                 break;
-            case 4:
+            case FOD_INFO:
                 if (SemInputDeviceManagerService.isDevidTsp(devid)) {
                     return getTspFodInformation(devid);
                 }
                 break;
-            case 5:
+            case FOD_POS:
                 if (SemInputDeviceManagerService.isDevidTsp(devid)) {
                     return getTspFodPosition(devid);
                 }
                 break;
-            case 6:
+            case AOD_ACTIVE_AREA:
                 if (SemInputDeviceManagerService.isDevidTsp(devid)) {
                     return getTspAodActiveArea(devid);
                 }
                 break;
-            case 7:
+            case EPEN_POS:
                 if (SemInputDeviceManagerService.isDevidSpen(devid)) {
                     return getSpenPosition();
                 }
@@ -397,7 +356,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.getTspScrubPosition(devid, new ISehSysInputDev.getTspScrubPositionCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda1
+                hal.getTspScrubPosition(devid, new ISehSysInputDev.getTspScrubPositionCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda4
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getTspScrubPositionCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getTspScrubPosition$2(devid, list, i, str);
@@ -429,7 +388,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.getTspSupportFeature(devid, new ISehSysInputDev.getTspSupportFeatureCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda10
+                hal.getTspSupportFeature(devid, new ISehSysInputDev.getTspSupportFeatureCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda11
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getTspSupportFeatureCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getTspSupportFeature$3(devid, list, i, str);
@@ -465,7 +424,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.getTspCommandList(devid, new ISehSysInputDev.getTspCommandListCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda2
+                hal.getTspCommandList(devid, new ISehSysInputDev.getTspCommandListCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda6
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getTspCommandListCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getTspCommandList$4(devid, list, i, str);
@@ -496,7 +455,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.getTspAodActiveArea(devid, new ISehSysInputDev.getTspAodActiveAreaCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda11
+                hal.getTspAodActiveArea(devid, new ISehSysInputDev.getTspAodActiveAreaCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda7
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getTspAodActiveAreaCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getTspAodActiveArea$5(devid, list, i, str);
@@ -528,7 +487,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.getTspFodInformation(devid, new ISehSysInputDev.getTspFodInformationCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda4
+                hal.getTspFodInformation(devid, new ISehSysInputDev.getTspFodInformationCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda3
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getTspFodInformationCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getTspFodInformation$6(devid, list, i, str);
@@ -560,7 +519,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.getTspFodPosition(devid, new ISehSysInputDev.getTspFodPositionCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda0
+                hal.getTspFodPosition(devid, new ISehSysInputDev.getTspFodPositionCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda1
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getTspFodPositionCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getTspFodPosition$7(devid, list, i, str);
@@ -621,7 +580,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.runSpenCmd(cmdname, new ISehSysInputDev.runSpenCmdCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda9
+                hal.runSpenCmd(cmdname, new ISehSysInputDev.runSpenCmdCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda2
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.runSpenCmdCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$runSpenCmd$8(list, i, str);
@@ -681,7 +640,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.getSpenPosition(new ISehSysInputDev.getSpenPositionCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda6
+                hal.getSpenPosition(new ISehSysInputDev.getSpenPositionCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda12
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getSpenPositionCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getSpenPosition$9(list, i, str);
@@ -713,7 +672,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
                 return "NG";
             }
             synchronized (hal) {
-                hal.getSpenCommandList(new ISehSysInputDev.getSpenCommandListCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda3
+                hal.getSpenCommandList(new ISehSysInputDev.getSpenCommandListCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda0
                     @Override // vendor.samsung.hardware.sysinput.V1_0.ISehSysInputDev.getSpenCommandListCallback
                     public final void onValues(int i, String str) {
                         SysinputHAL_V1_2.this.lambda$getSpenCommandList$10(list, i, str);
@@ -767,7 +726,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
             return -3;
         }
         synchronized (hal) {
-            hal.initTspRawData(devid, mode, new ISehSysInputDev.initTspRawDataCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda7
+            hal.initTspRawData(devid, mode, new ISehSysInputDev.initTspRawDataCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda10
                 @Override // vendor.samsung.hardware.sysinput.V1_2.ISehSysInputDev.initTspRawDataCallback
                 public final void onValues(int i, ArrayList arrayList) {
                     SysinputHAL_V1_2.this.lambda$streamRawdata$11(maxlist, devid, mode, i, arrayList);
@@ -800,7 +759,7 @@ public class SysinputHAL_V1_2 implements SysinputHALInterface {
             return "NG";
         }
         synchronized (hal) {
-            hal.readTaas(new ISehSysInputDev.readTaasCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda12
+            hal.readTaas(new ISehSysInputDev.readTaasCallback() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_V1_2$$ExternalSyntheticLambda9
                 @Override // vendor.samsung.hardware.sysinput.V1_2.ISehSysInputDev.readTaasCallback
                 public final void onValues(int i, String str) {
                     SysinputHAL_V1_2.this.lambda$readTaas$12(list, i, str);

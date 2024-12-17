@@ -1,7 +1,6 @@
 package com.samsung.android.hardware.secinputdev;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -19,11 +18,9 @@ import com.samsung.android.hardware.secinputdev.external.SemInputExternalListene
 import com.samsung.android.hardware.secinputdev.external.SemInputExternalReceiver;
 import com.samsung.android.hardware.secinputdev.hal.SysinputHALFactory;
 import com.samsung.android.hardware.secinputdev.hal.SysinputHALInterface;
-import com.samsung.android.hardware.secinputdev.taas.SemInputTaasInterface;
+import com.samsung.android.hardware.secinputdev.taas.SemInputTaas;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,10 +61,10 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
     private final SemInputCommandService commandService;
     private final Context context;
     private SemInputExternalListener externalEventHandler;
-    private final HandlerThread mainHandlerThread;
     private final SemInputDeviceMotionHelper motionHelper;
     private final Handler settingHandler;
     private final SysinputHALInterface sysinputHAL;
+    private final SemInputTaas taasService;
     private final StringBuilder bootingDump = new StringBuilder();
     private final InitialOperation initialOperation = new InitialOperation();
     private final HashMap<SemInputConstants.Device, DeviceDisplayState> deviceDisplayStates = new HashMap<SemInputConstants.Device, DeviceDisplayState>() { // from class: com.samsung.android.hardware.secinputdev.SemInputDeviceManagerService.1
@@ -78,7 +75,7 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
     };
     private String currentGameMode = "0";
     private String currentScanRate = "0";
-    private String currentProxLpScanMode = "0";
+    private String currentFastResponse = "0";
     private int currentChargingStatus = 0;
     private int currentChargingType = 0;
     private int keepProxLpScanMode = -1;
@@ -86,7 +83,6 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
     private boolean currentFolded = false;
     private boolean supportProxLpScanEnabled = false;
     private SemInputSettingObserver settingObserver = null;
-    private SemInputTaasInterface monitorService = null;
     private SemInputExternalReceiver externalBroadcastHandler = null;
     private int wirelessChargingState = 0;
     private int bedtimeRunningState = 0;
@@ -135,9 +131,7 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
         public void onShutdown() {
             Log.i(SemInputDeviceManagerService.TAG, "shutdownBroadcastReceiver");
             SemInputDeviceManagerService.this.motionHelper.onShutdown();
-            if (SemInputDeviceManagerService.this.monitorService != null) {
-                SemInputDeviceManagerService.this.monitorService.destroy();
-            }
+            SemInputDeviceManagerService.this.taasService.destroy();
             SemInputDeviceManagerService.this.commandService.activate(1, -1, true, false);
         }
 
@@ -148,7 +142,7 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
         }
 
         @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IBroadcastReceiver
-        public void onGameMode(String gameMode, String scanRate) {
+        public void onGameMode(String gameMode, String scanRate, String fastResponse) {
             Log.i(SemInputDeviceManagerService.TAG, "gameServiceBroadcastReceiver: onGameMode");
             if (gameMode != null && !gameMode.trim().isEmpty()) {
                 if (SemInputDeviceManagerService.this.currentGameMode.equals(gameMode)) {
@@ -164,6 +158,14 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
                 } else {
                     SemInputDeviceManagerService.this.commandService.setPropertyAllTouch(SemInputConstants.Command.SCAN_RATE, scanRate);
                     SemInputDeviceManagerService.this.currentScanRate = scanRate;
+                }
+            }
+            if (fastResponse != null && !fastResponse.trim().isEmpty()) {
+                if (SemInputDeviceManagerService.this.currentFastResponse.equals(fastResponse)) {
+                    Log.d(SemInputDeviceManagerService.TAG, "gameServiceBroadcastReceiver: fastResponse is not changed");
+                } else {
+                    SemInputDeviceManagerService.this.commandService.setPropertyAllTouch(SemInputConstants.Command.FAST_RESPONSE, fastResponse);
+                    SemInputDeviceManagerService.this.currentFastResponse = fastResponse;
                 }
             }
         }
@@ -286,6 +288,7 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
             }
         }
     };
+    private final HandlerThread mainHandlerThread = new HandlerThread("SemInputMainHandlerThread");
 
     public interface MainHandlerMessage {
         public static final int HAL_FACTORY_REGISTER_CALLBACK = 1;
@@ -311,19 +314,16 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
     public SemInputDeviceManagerService(Context context) {
         this.externalEventHandler = null;
         this.context = context;
-        HandlerThread handlerThread = new HandlerThread("SemInputMainHandlerThread");
-        this.mainHandlerThread = handlerThread;
-        handlerThread.start();
-        mainHandler = new MainHandler(handlerThread.getLooper());
-        this.settingHandler = new SettingHandler(handlerThread.getLooper());
-        SysinputHALInterface connectHAL = SysinputHALFactory.connectHAL();
-        this.sysinputHAL = connectHAL;
+        this.mainHandlerThread.start();
+        mainHandler = new MainHandler(this.mainHandlerThread.getLooper());
+        this.settingHandler = new SettingHandler(this.mainHandlerThread.getLooper());
+        this.sysinputHAL = SysinputHALFactory.connectHAL();
         registerCallbackWithRetries(5);
-        this.commandService = new SemInputCommandService(connectHAL);
+        this.commandService = new SemInputCommandService(this.sysinputHAL);
         this.motionHelper = new SemInputDeviceMotionHelper(mainHandler, this, this.commandOperator);
         registerBroadcastReceiver();
-        registerMonitorMotionEvent();
         this.externalEventHandler = new SemInputExternalListener(context, mainHandler);
+        this.taasService = new SemInputTaas(context, this);
         Log.d(TAG, "done");
     }
 
@@ -358,9 +358,8 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
 
     public static void systemReady() {
         Log.i(TAG, "systemReady");
-        Handler handler = mainHandler;
-        if (handler != null) {
-            handler.sendEmptyMessage(2);
+        if (mainHandler != null) {
+            mainHandler.sendEmptyMessage(2);
         } else {
             Log.e(TAG, "systemReady: mainHandler is null");
         }
@@ -408,24 +407,22 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
     }
 
     private class InitialOperation {
-        private final ConcurrentHashMap<SemInputExternal.Event, Boolean> checkedStates;
+        private final ConcurrentHashMap<SemInputExternal.Event, Boolean> checkedStates = new ConcurrentHashMap<>();
 
         InitialOperation() {
-            ConcurrentHashMap<SemInputExternal.Event, Boolean> concurrentHashMap = new ConcurrentHashMap<>();
-            this.checkedStates = concurrentHashMap;
-            concurrentHashMap.put(SemInputExternal.Event.LISTENER_DISPLAY_STATE, false);
+            this.checkedStates.put(SemInputExternal.Event.LISTENER_DISPLAY_STATE, false);
             if (SemInputFeatures.IS_WEAROS && SemInputFeatures.SUPPORT_AWD) {
-                concurrentHashMap.put(SemInputExternal.Event.LISTENER_SENSOR_WATCH, false);
+                this.checkedStates.put(SemInputExternal.Event.LISTENER_SENSOR_WATCH, false);
                 return;
             }
-            concurrentHashMap.put(SemInputExternal.Event.LISTENER_DISPLAY, false);
-            concurrentHashMap.put(SemInputExternal.Event.SETTING_AOT, false);
-            concurrentHashMap.put(SemInputExternal.Event.SETTING_SPEN, false);
-            concurrentHashMap.put(SemInputExternal.Event.SETTING_TSP_EXTRA, false);
-            concurrentHashMap.put(SemInputExternal.Event.LISTENER_FOLD_STATE, false);
-            concurrentHashMap.put(SemInputExternal.Event.LISTENER_DEX, false);
-            concurrentHashMap.put(SemInputExternal.Event.LISTENER_PROX_LP_SCAN, false);
-            concurrentHashMap.put(SemInputExternal.Event.OBSERVER_UEVENT, false);
+            this.checkedStates.put(SemInputExternal.Event.LISTENER_DISPLAY, false);
+            this.checkedStates.put(SemInputExternal.Event.SETTING_AOT, false);
+            this.checkedStates.put(SemInputExternal.Event.SETTING_SPEN, false);
+            this.checkedStates.put(SemInputExternal.Event.SETTING_TSP_EXTRA, false);
+            this.checkedStates.put(SemInputExternal.Event.LISTENER_FOLD_STATE, false);
+            this.checkedStates.put(SemInputExternal.Event.LISTENER_DEX, false);
+            this.checkedStates.put(SemInputExternal.Event.LISTENER_PROX_LP_SCAN, false);
+            this.checkedStates.put(SemInputExternal.Event.OBSERVER_UEVENT, false);
         }
 
         public void put(SemInputExternal.Event key, boolean registered) {
@@ -465,9 +462,8 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
     public void registerSettingObserver() {
         Log.d(TAG, "registerSettingObserver");
         if (this.settingObserver == null) {
-            SemInputSettingObserver semInputSettingObserver = SemInputSettingObserver.getInstance(this.context);
-            this.settingObserver = semInputSettingObserver;
-            semInputSettingObserver.registerDefault(this.settingHandler);
+            this.settingObserver = SemInputSettingObserver.getInstance(this.context);
+            this.settingObserver.registerDefault(this.settingHandler);
         }
         if (SemInputFeatures.IS_WEAROS) {
             return;
@@ -602,11 +598,10 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
 
     @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IExternalEventRegister
     public boolean registerBroadcastReceiver(SemInputExternal.Event event, SemInputExternal.IBroadcastReceiver receiver) {
-        SemInputExternalReceiver semInputExternalReceiver;
-        if (receiver == null || (semInputExternalReceiver = this.externalBroadcastHandler) == null) {
+        if (receiver == null || this.externalBroadcastHandler == null) {
             return false;
         }
-        semInputExternalReceiver.registerBroadcastReceiver(event, receiver);
+        this.externalBroadcastHandler.registerBroadcastReceiver(event, receiver);
         return true;
     }
 
@@ -614,52 +609,48 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
         if (this.externalBroadcastHandler != null) {
             return;
         }
-        SemInputExternalReceiver semInputExternalReceiver = new SemInputExternalReceiver(this.context, mainHandler);
-        this.externalBroadcastHandler = semInputExternalReceiver;
-        semInputExternalReceiver.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_BATTERY, this.broadcastReceiver);
-        this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_BATTERY_EXTRA, this.broadcastReceiver);
-        this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_SHUTDOWN, this.broadcastReceiver);
-        this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_LAZY_BOOT, this.broadcastReceiver);
-        this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_USER_SWITCHED, this.broadcastReceiver);
-        if (SemInputFeatures.IS_WEAROS) {
-            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_RF_DETECTED, this.broadcastReceiver);
-            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_RF_OFF_DETECTED, this.broadcastReceiver);
-        } else {
-            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_GAME, this.broadcastReceiver);
-            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_COVER, this.broadcastReceiver);
+        this.externalBroadcastHandler = new SemInputExternalReceiver(this.context, mainHandler);
+        if (this.externalBroadcastHandler != null) {
+            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_BATTERY, this.broadcastReceiver);
+            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_BATTERY_EXTRA, this.broadcastReceiver);
+            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_SHUTDOWN, this.broadcastReceiver);
+            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_LAZY_BOOT, this.broadcastReceiver);
+            this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_USER_SWITCHED, this.broadcastReceiver);
+            if (SemInputFeatures.IS_WEAROS) {
+                this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_RF_DETECTED, this.broadcastReceiver);
+                this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_RF_OFF_DETECTED, this.broadcastReceiver);
+            } else {
+                this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_GAME, this.broadcastReceiver);
+                this.externalBroadcastHandler.registerBroadcastReceiver(SemInputExternal.Event.BROADCAST_COVER, this.broadcastReceiver);
+            }
         }
     }
 
     @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IExternalEventRegister
     public boolean registerServiceListener(SemInputExternal.Event event, SemInputExternal.IServiceListener listener) {
-        SemInputExternalListener semInputExternalListener = this.externalEventHandler;
-        if (semInputExternalListener == null) {
+        if (this.externalEventHandler == null) {
             return false;
         }
-        semInputExternalListener.registerServiceListener(event, listener);
-        return false;
+        this.externalEventHandler.registerServiceListener(event, listener);
+        return true;
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     public void registerExternalService() {
-        StringBuilder registeredBuffer = new StringBuilder();
         for (Map.Entry<SemInputExternal.Event, String> element : this.externalEventHandler.getSupportList().entrySet()) {
             if (!this.initialOperation.get(element.getKey())) {
                 if (element.getKey() == SemInputExternal.Event.LISTENER_PROX_LP_SCAN) {
-                    boolean isSupportProxLpScanEnabled = this.commandService.isSupportProxLpScanEnabled();
-                    this.supportProxLpScanEnabled = isSupportProxLpScanEnabled;
-                    if (!isSupportProxLpScanEnabled) {
+                    this.supportProxLpScanEnabled = this.commandService.isSupportProxLpScanEnabled();
+                    if (!this.supportProxLpScanEnabled) {
+                        this.initialOperation.put(element.getKey(), true);
+                        this.bootingDump.append("- SensorProxLpScanListenerWrapper NOT registered: not supported\n");
                     }
                 }
                 boolean ret = this.externalEventHandler.registerServiceListener(element.getKey(), this.serviceListener);
                 this.initialOperation.put(element.getKey(), ret);
-                if (ret) {
-                    registeredBuffer.append(element.getValue() + ", ");
-                } else {
-                    this.bootingDump.append(this.externalEventHandler.getLog());
-                }
             }
         }
+        this.bootingDump.append(this.externalEventHandler.getLog());
     }
 
     /* JADX INFO: Access modifiers changed from: private */
@@ -746,52 +737,6 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
         }
     }
 
-    private void registerMonitorMotionEvent() {
-        boolean findTaas = false;
-        StringBuilder logString = new StringBuilder("- TAAS MonitorMotionEvent");
-        try {
-            if (Integer.parseInt(Build.VERSION.RELEASE) < 13) {
-                if (this.commandService.isSupportInputMonitorEnabled()) {
-                    logString.append(" SupportFeature");
-                    findTaas = true;
-                } else {
-                    logString.append(" Not Support (SupportFeature)");
-                }
-            } else if (Integer.parseInt("2") > 0) {
-                logString.append(" HFRFeature");
-                findTaas = true;
-            } else {
-                logString.append(" Not Support (HFRFeature)");
-            }
-        } catch (Exception e) {
-            loggingException(TAG, "SemInputMonitorMotionEvent:", e);
-        }
-        if (findTaas) {
-            try {
-                Class classObject = Class.forName("com.samsung.android.hardware.secinputdev.taas.SemInputMonitorMotionEvent");
-                Constructor constructor = classObject.getConstructor(Context.class);
-                SemInputTaasInterface semInputTaasInterface = (SemInputTaasInterface) constructor.newInstance(this.context);
-                this.monitorService = semInputTaasInterface;
-                if (semInputTaasInterface == null) {
-                    logString.append(": failed");
-                } else {
-                    logString.append(": registered");
-                }
-            } catch (ClassNotFoundException e2) {
-                logString.append(": default interface");
-                this.monitorService = new SemInputTaasInterface() { // from class: com.samsung.android.hardware.secinputdev.SemInputDeviceManagerService.4
-                };
-            } catch (InvocationTargetException e3) {
-                loggingThrowable(TAG, "Taas", e3.getCause());
-            } catch (Exception e4) {
-                loggingException(TAG, "SemInputMonitorMotionEvent:", e4);
-            }
-        }
-        Log.d(TAG, logString.toString());
-        logString.append("\n");
-        this.bootingDump.append(logString.toString());
-    }
-
     @Override // android.os.Binder
     protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         if (pw == null) {
@@ -804,10 +749,8 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
             pw.println("");
             this.commandService.dump(pw);
         }
-        if (this.monitorService != null) {
-            pw.println("");
-            this.monitorService.dump(pw);
-        }
+        pw.println("");
+        this.taasService.dump(pw);
         if (SemInputMotionEventDispatcher.isCreated()) {
             pw.println("");
             SemInputMotionEventDispatcher.getInstance(this.context).dump(pw);
@@ -820,9 +763,8 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
 
     private void dumpEvents(PrintWriter pw) {
         pw.println("\ndumping SemInputDeviceManager Events");
-        SemInputCommandService semInputCommandService = this.commandService;
-        if (semInputCommandService != null) {
-            semInputCommandService.dumpEvents(pw);
+        if (this.commandService != null) {
+            this.commandService.dumpEvents(pw);
         }
         pw.println("");
         this.sysinputHAL.dumpEvents(pw);
@@ -1069,9 +1011,9 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
     }
 
     @Override // com.samsung.android.hardware.secinputdev.ISemInputDeviceManager
-    public int setFodEnable(int mode, int pressFast, int strictMode) throws RemoteException {
+    public int setFodEnable(int mode, int pressFast, int strictMode, int control) throws RemoteException {
         if (mode == 1) {
-            return this.commandService.setPropertyAllTouch(SemInputConstants.Command.FOD, mode + "," + pressFast + "," + strictMode);
+            return this.commandService.setPropertyAllTouch(SemInputConstants.Command.FOD, mode + "," + pressFast + "," + strictMode + "," + control);
         }
         return this.commandService.setPropertyAllTouch(SemInputConstants.Command.FOD, mode + "");
     }
@@ -1110,8 +1052,8 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
         if (!command.isExternal()) {
             throw new SecurityException(command + " is not allowed");
         }
-        switch (AnonymousClass5.$SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Device[device.ordinal()]) {
-            case 1:
+        switch (device) {
+            case NOT_SPECIFIED:
                 if (SemInputFeatures.IS_WEAROS) {
                     return this.commandService.setProperty(1, command, mode);
                 }
@@ -1119,28 +1061,10 @@ public class SemInputDeviceManagerService extends ISemInputDeviceManager.Stub im
                     return this.commandService.setPropertyAllTouchAndSpen(command, mode);
                 }
                 return this.commandService.setPropertyAllTouch(command, mode);
-            case 2:
+            case CURRENT_TSP:
                 return this.commandService.setProperty(getCurrentTSP(), command, mode);
             default:
                 return this.commandService.setProperty(device.toInt(), command, mode);
-        }
-    }
-
-    /* renamed from: com.samsung.android.hardware.secinputdev.SemInputDeviceManagerService$5, reason: invalid class name */
-    static /* synthetic */ class AnonymousClass5 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Device;
-
-        static {
-            int[] iArr = new int[SemInputConstants.Device.values().length];
-            $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Device = iArr;
-            try {
-                iArr[SemInputConstants.Device.NOT_SPECIFIED.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputConstants$Device[SemInputConstants.Device.CURRENT_TSP.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
         }
     }
 

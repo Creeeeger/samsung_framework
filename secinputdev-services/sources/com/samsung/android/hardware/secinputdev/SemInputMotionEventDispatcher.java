@@ -16,6 +16,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Queue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /* loaded from: classes.dex */
 public class SemInputMotionEventDispatcher {
@@ -23,10 +25,12 @@ public class SemInputMotionEventDispatcher {
     private static volatile SemInputMotionEventDispatcher uniqueInstance = null;
     private final Context context;
     private final ArrayList<SemInputMotionEventListener> listeners = new ArrayList<>();
+    private final SemInputDumpsysData cancelDumpsys = new SemInputDumpsysData(20);
+    private final Lock registerLock = new ReentrantLock();
     private InputMonitor inputMonitor = null;
     private InputEventReceiver inputEventReceiver = null;
-    private HandlerThread inputHandlerThread = null;
-    private final SemInputDumpsysData cancelDumpsys = new SemInputDumpsysData(20);
+    private boolean isRegistered = false;
+    private final HandlerThread inputHandlerThread = new HandlerThread(TAG, -2);
 
     public interface SemInputMotionEventListener {
         void onMotionEvent(MotionEvent motionEvent);
@@ -34,6 +38,7 @@ public class SemInputMotionEventDispatcher {
 
     private SemInputMotionEventDispatcher(Context context) {
         this.context = context;
+        this.inputHandlerThread.start();
     }
 
     public static SemInputMotionEventDispatcher getInstance(Context context) {
@@ -56,27 +61,39 @@ public class SemInputMotionEventDispatcher {
 
     private boolean checkSecurityPermission(String caller) {
         if (Process.myUid() == 1000) {
-            return caller.contains("secinputdev") && caller.contains("SemInput");
+            return caller.contains("secinputdev");
         }
         Log.e(TAG, "SemInputMotionEventDispatcher only available from system UID.");
         return false;
     }
 
     public boolean registerMotionEventListener(SemInputMotionEventListener listener) {
-        if (listener != null) {
-            if (!checkSecurityPermission(listener.toString())) {
-                throw new SecurityException("Only SemInput service can use it");
-            }
+        if (listener == null) {
+            return false;
+        }
+        if (!checkSecurityPermission(listener.toString())) {
+            throw new SecurityException("Only SemInput service can use it");
+        }
+        this.registerLock.lock();
+        try {
             synchronized (this.listeners) {
+                if (this.listeners.contains(listener)) {
+                    Log.d(TAG, "registerMotionEventListener: already registered: " + listener.toString());
+                    return false;
+                }
                 this.listeners.add(listener);
-                if (this.listeners.size() == 1 && this.inputMonitor == null) {
+                int sizeOfListeners = this.listeners.size();
+                if (sizeOfListeners == 1 && this.inputMonitor == null) {
                     registerInputEventReceiver();
                 }
+                this.isRegistered = true;
+                this.registerLock.unlock();
+                Log.d(TAG, "registerMotionEventListener: " + listener.toString());
+                return true;
             }
-            Log.d(TAG, "registerMotionEventListener: " + listener.toString());
-            return true;
+        } finally {
+            this.registerLock.unlock();
         }
-        return false;
     }
 
     public boolean unregisterMotionEventListener(SemInputMotionEventListener listener) {
@@ -86,28 +103,35 @@ public class SemInputMotionEventDispatcher {
         if (!checkSecurityPermission(listener.toString())) {
             throw new SecurityException("Only SemInput service can use it");
         }
-        synchronized (this.listeners) {
-            if (!this.listeners.contains(listener)) {
-                return false;
+        this.registerLock.lock();
+        try {
+            synchronized (this.listeners) {
+                if (!this.listeners.contains(listener)) {
+                    return false;
+                }
+                this.listeners.remove(listener);
+                int sizeOfListeners = this.listeners.size();
+                Log.d(TAG, "unregisterMotionEventListener: " + listener.toString());
+                if (sizeOfListeners == 0) {
+                    this.isRegistered = false;
+                    unregisterInputEventReceiver();
+                }
+                this.registerLock.unlock();
+                return true;
             }
-            this.listeners.remove(listener);
-            Log.d(TAG, "unregisterMotionEventListener: " + listener.toString());
-            if (this.listeners.size() == 0) {
-                unregisterInputEventReceiver();
-            }
-            return true;
+        } finally {
+            this.registerLock.unlock();
         }
     }
 
     public void pilferPointers(SemInputMotionEventListener listener) {
-        InputMonitor inputMonitor;
         if (listener != null) {
             if (!checkSecurityPermission(listener.toString())) {
                 throw new SecurityException("Only SemInput service can use it");
             }
             synchronized (this.listeners) {
-                if (this.listeners.contains(listener) && (inputMonitor = this.inputMonitor) != null) {
-                    inputMonitor.pilferPointers();
+                if (this.listeners.contains(listener) && this.inputMonitor != null) {
+                    this.inputMonitor.pilferPointers();
                     Log.i(TAG, "cancel");
                     this.cancelDumpsys.createDataAndAddQueue(listener.toString());
                 }
@@ -116,21 +140,16 @@ public class SemInputMotionEventDispatcher {
     }
 
     private void registerInputEventReceiver() {
-        Context context = this.context;
-        if (context == null) {
+        if (this.context == null) {
             Log.w(TAG, "registerInputEventReceiver: context is null");
             return;
         }
-        int displayId = context.getDisplayId();
+        int displayId = this.context.getDisplayId();
         try {
-            InputMonitor monitorGestureInput = InputManager.getInstance().monitorGestureInput("secinputdev", displayId);
-            this.inputMonitor = monitorGestureInput;
-            if (monitorGestureInput == null) {
+            this.inputMonitor = InputManager.getInstance().monitorGestureInput("secinputdev", displayId);
+            if (this.inputMonitor == null) {
                 return;
             }
-            HandlerThread handlerThread = new HandlerThread(TAG, -2);
-            this.inputHandlerThread = handlerThread;
-            handlerThread.start();
             this.inputEventReceiver = new MyInputEventReceiver(this.inputMonitor.getInputChannel(), this.inputHandlerThread.getLooper());
             Log.d(TAG, "registerInputEventReceiver: displayId: " + displayId);
         } catch (Exception e) {
@@ -140,22 +159,15 @@ public class SemInputMotionEventDispatcher {
     }
 
     private void unregisterInputEventReceiver() {
-        InputEventReceiver inputEventReceiver = this.inputEventReceiver;
-        if (inputEventReceiver != null) {
-            inputEventReceiver.dispose();
+        if (this.inputEventReceiver != null) {
+            this.inputEventReceiver.dispose();
             this.inputEventReceiver = null;
             Log.i(TAG, "unregisterInputEventReceiver: dispose InputEventReceiver");
         }
-        InputMonitor inputMonitor = this.inputMonitor;
-        if (inputMonitor != null) {
-            inputMonitor.dispose();
+        if (this.inputMonitor != null) {
+            this.inputMonitor.dispose();
             this.inputMonitor = null;
             Log.i(TAG, "unregisterInputEventReceiver: dispose InputMonitor");
-        }
-        HandlerThread handlerThread = this.inputHandlerThread;
-        if (handlerThread != null) {
-            handlerThread.quitSafely();
-            this.inputHandlerThread = null;
         }
     }
 
@@ -165,6 +177,10 @@ public class SemInputMotionEventDispatcher {
         }
 
         public void onInputEvent(InputEvent event) {
+            if (!SemInputMotionEventDispatcher.this.isRegistered) {
+                finishInputEvent(event, true);
+                return;
+            }
             if (event instanceof MotionEvent) {
                 MotionEvent motionEvent = (MotionEvent) event;
                 synchronized (SemInputMotionEventDispatcher.this.listeners) {
@@ -181,10 +197,7 @@ public class SemInputMotionEventDispatcher {
 
     public void dump(PrintWriter pw) {
         pw.println("dumping SemInputMotionEventDispatcher");
-        HandlerThread handlerThread = this.inputHandlerThread;
-        if (handlerThread != null) {
-            handlerThread.getLooper().dump(new PrintWriterPrinter(pw), "- ");
-        }
+        this.inputHandlerThread.getLooper().dump(new PrintWriterPrinter(pw), "- ");
         ArrayList<SemInputMotionEventListener> copiedListeners = new ArrayList<>();
         synchronized (this.listeners) {
             copiedListeners.addAll(this.listeners);

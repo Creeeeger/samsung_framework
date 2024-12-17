@@ -28,9 +28,8 @@ public class SemUEventObserverWrapper extends ExternalService {
         this.ueventObserver.startObserving("DEVPATH=/devices/virtual/sec/tsp");
         this.ueventObserver.startObserving("DEVPATH=/devices/virtual/sec/sec_epen");
         this.ueventObserver.startObserving("DEVPATH=/devices/virtual/sec/digital_hall");
-        InputManagerGlobal inputManagerGlobal = InputManagerGlobal.getInstance();
-        this.inputManagerGlobal = inputManagerGlobal;
-        if (inputManagerGlobal == null) {
+        this.inputManagerGlobal = InputManagerGlobal.getInstance();
+        if (this.inputManagerGlobal == null) {
             Log.d(TAG, "can not get InputManagerGlobal");
             return "";
         }
@@ -52,9 +51,8 @@ public class SemUEventObserverWrapper extends ExternalService {
                 int y = Integer.parseInt(xy[1]);
                 int type = Integer.parseInt(gesture);
                 Log.d(TAG, "!@[sec_input] gesture event type: " + type + "," + x + "," + y);
-                InputManagerGlobal inputManagerGlobal = this.inputManagerGlobal;
-                if (inputManagerGlobal != null) {
-                    inputManagerGlobal.notifyQuickAccess(type, x, y);
+                if (this.inputManagerGlobal != null) {
+                    this.inputManagerGlobal.notifyQuickAccess(type, x, y);
                 }
                 return 1;
             }

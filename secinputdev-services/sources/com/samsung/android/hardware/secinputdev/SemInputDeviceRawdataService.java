@@ -18,57 +18,42 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 public class SemInputDeviceRawdataService {
     private static final int RAWDATA_POSTFIX_SIZE = 1;
     private static final int RAWDATA_PREFIX_SIZE = 4;
-    public int PHYS_CHANNEL_X;
-    public int PHYS_CHANNEL_Y;
-    public int RAWDATA_LENGTH;
-    public int RAWDATA_SIZE;
     private final String TAG;
-    private final StringBuilder bootingDump;
     private final Context context;
-    private int frameCount;
-    private volatile boolean isScreenOn;
-    private SemInputMotionController motionController;
-    private int pollCount;
-    private int readRawdataEnable;
     private boolean supportRawService;
     private final Touch touch;
     private final RemoteCallbackList<ISemInputDeviceRemoteServiceCallback> callbackList = new RemoteCallbackList<>();
     private final Map<String, ISemInputDeviceRemoteServiceCallback> callbackClientList = new HashMap();
     private final AtomicIntegerArray enabledTypes = new AtomicIntegerArray(3);
+    private final StringBuilder bootingDump = new StringBuilder();
+    public int PHYS_CHANNEL_X = 0;
+    public int PHYS_CHANNEL_Y = 0;
+    public int RAWDATA_LENGTH = 0;
+    public int RAWDATA_SIZE = 0;
+    private SemInputMotionController motionController = null;
+    private volatile boolean isScreenOn = true;
+    private int readRawdataEnable = 0;
+    private int pollCount = 0;
 
     public SemInputDeviceRawdataService(Context context, SysinputHALInterface hal, int devid) {
-        StringBuilder sb = new StringBuilder();
-        this.bootingDump = sb;
-        this.PHYS_CHANNEL_X = 0;
-        this.PHYS_CHANNEL_Y = 0;
-        this.RAWDATA_LENGTH = 0;
-        this.RAWDATA_SIZE = 0;
-        this.motionController = null;
         this.supportRawService = false;
-        this.isScreenOn = true;
-        this.readRawdataEnable = 0;
-        this.frameCount = 0;
-        this.pollCount = 0;
         this.context = context;
-        String str = "SemInputRawdataService" + devid;
-        this.TAG = str;
-        Touch touch = SemInputDeviceFactory.getTouch(devid);
-        this.touch = touch;
-        if (touch == null) {
+        this.TAG = "SemInputRawdataService" + devid;
+        this.touch = SemInputDeviceFactory.getTouch(devid);
+        if (this.touch == null) {
             String log = "Touch(" + devid + ") is not registered";
-            Log.e(str, log);
-            sb.append("- " + log + "\n");
+            Log.e(this.TAG, log);
+            this.bootingDump.append("- " + log + "\n");
         } else if (Float.compare(hal.getVersion(), 1.3f) < 0) {
             String log2 = "not support hal v" + hal.getVersion();
-            Log.e(str, log2);
-            sb.append("- " + log2 + "\n");
+            Log.e(this.TAG, log2);
+            this.bootingDump.append("- " + log2 + "\n");
         } else {
-            boolean initPanelInformation = initPanelInformation();
-            this.supportRawService = initPanelInformation;
-            if (!initPanelInformation) {
+            this.supportRawService = initPanelInformation();
+            if (!this.supportRawService) {
                 return;
             }
-            Log.d(str, "done");
+            Log.d(this.TAG, "done");
         }
     }
 
@@ -126,10 +111,10 @@ public class SemInputDeviceRawdataService {
         this.PHYS_CHANNEL_X = xNum;
         this.PHYS_CHANNEL_Y = yNum;
         this.RAWDATA_LENGTH = rawdataLength;
-        if (rawdataLength > 0) {
-            this.RAWDATA_SIZE = rawdataLength + 4 + 1;
+        if (this.RAWDATA_LENGTH > 0) {
+            this.RAWDATA_SIZE = this.RAWDATA_LENGTH + 4 + 1;
         } else {
-            this.RAWDATA_SIZE = (xNum * yNum) + 4 + 1;
+            this.RAWDATA_SIZE = (this.PHYS_CHANNEL_X * this.PHYS_CHANNEL_Y) + 4 + 1;
         }
         Log.d(this.TAG, "initPanelInformation: x: " + this.PHYS_CHANNEL_X + " y: " + this.PHYS_CHANNEL_Y + " RAWDATA_SIZE: " + this.RAWDATA_SIZE);
         this.bootingDump.append("- x: " + this.PHYS_CHANNEL_X + " y: " + this.PHYS_CHANNEL_Y + " length: " + this.RAWDATA_LENGTH + " RAWDATA_SIZE: " + this.RAWDATA_SIZE + "\n");
@@ -139,9 +124,8 @@ public class SemInputDeviceRawdataService {
     public void destroy() {
         pauseService();
         this.readRawdataEnable = 0;
-        SemInputMotionController semInputMotionController = this.motionController;
-        if (semInputMotionController != null) {
-            semInputMotionController.destroy();
+        if (this.motionController != null) {
+            this.motionController.destroy();
         }
         Log.d(this.TAG, "destroy");
     }
@@ -153,9 +137,8 @@ public class SemInputDeviceRawdataService {
         if (this.readRawdataEnable != 0) {
             Log.i(this.TAG, "restartService");
             this.touch.streamRawdata(this.readRawdataEnable);
-            SemInputMotionController semInputMotionController = this.motionController;
-            if (semInputMotionController != null) {
-                semInputMotionController.restart();
+            if (this.motionController != null) {
+                this.motionController.restart();
             }
         }
         this.isScreenOn = true;
@@ -168,9 +151,8 @@ public class SemInputDeviceRawdataService {
         this.isScreenOn = false;
         if (this.readRawdataEnable != 0) {
             Log.i(this.TAG, "pauseService");
-            SemInputMotionController semInputMotionController = this.motionController;
-            if (semInputMotionController != null) {
-                semInputMotionController.pause();
+            if (this.motionController != null) {
+                this.motionController.pause();
             }
             this.touch.streamRawdata(0);
         }
@@ -199,7 +181,6 @@ public class SemInputDeviceRawdataService {
         } else {
             Log.i(this.TAG, "enableService: screen is off");
         }
-        this.frameCount = 0;
         Log.d(this.TAG, "enableService: total:" + String.format("0x%X", Integer.valueOf(this.readRawdataEnable)) + " callback:" + this.enabledTypes.get(1) + " listener:" + this.enabledTypes.get(2));
         return true;
     }
@@ -215,9 +196,8 @@ public class SemInputDeviceRawdataService {
         }
         Log.i(this.TAG, "disableService: " + enabledType);
         clientCountDec(enabledType);
-        int i = this.readRawdataEnable & (~enableBit);
-        this.readRawdataEnable = i;
-        this.touch.streamRawdata(i);
+        this.readRawdataEnable &= ~enableBit;
+        this.touch.streamRawdata(this.readRawdataEnable);
         Log.d(this.TAG, "disableService: total:" + String.format("0x%X", Integer.valueOf(this.readRawdataEnable)) + " callback:" + this.enabledTypes.get(1) + " listener:" + this.enabledTypes.get(2));
         return true;
     }
@@ -300,9 +280,8 @@ public class SemInputDeviceRawdataService {
     }
 
     public void onReportInformation(String data) {
-        SemInputMotionController semInputMotionController;
-        if (this.supportRawService && data.contains(SemInputDeviceManager.REPORT_INFO_HANDEDGE) && (semInputMotionController = this.motionController) != null) {
-            semInputMotionController.deliveryInformation(data);
+        if (this.supportRawService && data.contains(SemInputDeviceManager.REPORT_INFO_HANDEDGE) && this.motionController != null) {
+            this.motionController.deliveryInformation(data);
         }
     }
 
@@ -315,8 +294,7 @@ public class SemInputDeviceRawdataService {
         int[] extraList = new int[this.RAWDATA_SIZE];
         for (int ii = 1; ii < this.pollCount; ii++) {
             try {
-                int i = this.RAWDATA_SIZE;
-                System.arraycopy(list, ii * i, extraList, 0, i);
+                System.arraycopy(list, this.RAWDATA_SIZE * ii, extraList, 0, this.RAWDATA_SIZE);
                 deliveryRawdata(extraList);
             } catch (Exception e) {
                 SemInputDeviceManagerService.loggingException(this.TAG, "onReportRawData", e);
@@ -327,9 +305,8 @@ public class SemInputDeviceRawdataService {
     private void deliveryRawdata(int[] data) {
         try {
             long currentTime = SystemClock.elapsedRealtimeNanos();
-            SemInputMotionController semInputMotionController = this.motionController;
-            if (semInputMotionController != null) {
-                semInputMotionController.deliveryRawdata(data);
+            if (this.motionController != null) {
+                this.motionController.deliveryRawdata(data);
             }
             if (this.enabledTypes.get(1) > 0) {
                 data[this.RAWDATA_SIZE - 1] = Long.valueOf(currentTime).intValue();

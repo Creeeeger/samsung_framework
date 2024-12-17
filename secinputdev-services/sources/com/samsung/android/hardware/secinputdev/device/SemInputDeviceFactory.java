@@ -11,8 +11,7 @@ public class SemInputDeviceFactory {
     public static synchronized SemInputDevice create(String name, int devid, int feature, String cmdlist) {
         SemInputDevice device;
         synchronized (SemInputDeviceFactory.class) {
-            Map<Integer, SemInputDevice> map = devices;
-            SemInputDevice device2 = map.get(Integer.valueOf(devid));
+            SemInputDevice device2 = devices.get(Integer.valueOf(devid));
             if (device2 != null) {
                 return device2;
             }
@@ -27,7 +26,7 @@ public class SemInputDeviceFactory {
             } else {
                 device = new NotDefined();
             }
-            map.put(Integer.valueOf(devid), device);
+            devices.put(Integer.valueOf(devid), device);
             return device;
         }
     }

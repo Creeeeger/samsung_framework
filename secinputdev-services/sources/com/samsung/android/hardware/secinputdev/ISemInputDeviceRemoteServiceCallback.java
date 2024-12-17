@@ -73,26 +73,24 @@ public interface ISemInputDeviceRemoteServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemInputDeviceRemoteServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemInputDeviceRemoteServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case 1598968902:
-                    reply.writeString(ISemInputDeviceRemoteServiceCallback.DESCRIPTOR);
+                case 1:
+                    int[] _arg0 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    deliveryRawdata(_arg0);
+                    return true;
+                case 2:
+                    int[] _arg02 = data.createIntArray();
+                    float _arg1 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    deliveryLastData(_arg02, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int[] _arg0 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            deliveryRawdata(_arg0);
-                            return true;
-                        case 2:
-                            int[] _arg02 = data.createIntArray();
-                            float _arg1 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            deliveryLastData(_arg02, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 

@@ -27,11 +27,10 @@ public class Spen extends SemInputDevice {
 
     public Spen(String name, int devid, int feature, String cmdlist) {
         super(name, devid, feature, cmdlist);
-        HashMap hashMap = new HashMap();
-        this.supportCommands = hashMap;
+        this.supportCommands = new HashMap();
         this.stringBuilderForSupportCommands = new StringBuilder();
         setCommands();
-        Log.i(this.TAG, "supportCommands: " + hashMap);
+        Log.i(this.TAG, "supportCommands: " + this.supportCommands);
     }
 
     @Override // com.samsung.android.hardware.secinputdev.device.SemInputDevice
@@ -92,8 +91,7 @@ public class Spen extends SemInputDevice {
                 this.supportCommands.put(Integer.valueOf(command.getInt()), command);
             }
         }
-        StringBuilder sb = this.stringBuilderForSupportCommands;
-        sb.delete(0, sb.length());
+        this.stringBuilderForSupportCommands.delete(0, this.stringBuilderForSupportCommands.length());
         int length = 0;
         for (Command command2 : this.supportCommands.values()) {
             this.stringBuilderForSupportCommands.append(command2.toString());

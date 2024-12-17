@@ -19,7 +19,7 @@ public class SemInputDumpsysData {
         this.MAX_QUEUE_SIZE = maxQueueSize;
         StackTraceElement[] stack = new Throwable().getStackTrace();
         if (stack.length >= 2) {
-            Log.d(TAG, "MAX_QUEUE_SIZE: " + maxQueueSize + " from " + stack[1].getClassName() + " at line" + stack[1].getLineNumber());
+            Log.d(TAG, "MAX_QUEUE_SIZE: " + this.MAX_QUEUE_SIZE + " from " + stack[1].getClassName() + " at line" + stack[1].getLineNumber());
         }
     }
 
@@ -67,9 +67,8 @@ public class SemInputDumpsysData {
     }
 
     public void setDataAndAddQueue(String msg) {
-        DumpsysData dumpsysData = this.currentData;
-        if (dumpsysData != null) {
-            dumpsysData.data.append(msg);
+        if (this.currentData != null) {
+            this.currentData.data.append(msg);
             addQueue(this.currentData);
             this.currentData = null;
             return;

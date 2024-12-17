@@ -13,6 +13,7 @@ import java.util.Map;
 public class Touch extends SemInputDevice {
     private static final String SET_ALWAYS_LOW_POWER_MODE = "set_always_lpm";
     private static final String SET_AOD_ENABLE = "aod_enable";
+    private static final String SET_AOD_NOTI_RECT = "set_aod_noti_rect";
     private static final String SET_AOD_RECT = "set_aod_rect";
     private static final String SET_AWD_MODE = "awd_mode";
     private static final String SET_BEZEL_ENABLE = "bezel_enable";
@@ -23,6 +24,7 @@ public class Touch extends SemInputDevice {
     private static final String SET_DOUBLE_TAP_TO_WAKE_UP = "aot_enable";
     private static final String SET_EAR_DETECT_ENABLE = "ear_detect_enable";
     private static final String SET_EXTERNAL_NOISE_MODE = "external_noise_mode";
+    private static final String SET_FAST_RESPONSE = "set_fast_response";
     private static final String SET_FOD_ENABLE = "fod_enable";
     private static final String SET_FOD_ICON_VISIBLE = "fod_icon_visible";
     private static final String SET_FOD_LP_MODE = "fod_lp_mode";
@@ -54,14 +56,13 @@ public class Touch extends SemInputDevice {
 
     public Touch(String name, int devid, int feature, String cmdlist) {
         super(name, devid, feature, cmdlist);
-        HashMap hashMap = new HashMap();
-        this.supportCommands = hashMap;
+        this.supportCommands = new HashMap();
         this.stringBuilderForSupportCommands = new StringBuilder();
         if (!SemInputFeatures.USE_CMDTHREAD) {
             this.pendingQueue = new LinkedList();
         }
         setCommands();
-        Log.i(this.TAG, "supportCommands: " + hashMap);
+        Log.i(this.TAG, "supportCommands: " + this.supportCommands);
     }
 
     @Override // com.samsung.android.hardware.secinputdev.device.SemInputDevice
@@ -72,6 +73,7 @@ public class Touch extends SemInputDevice {
     private enum Command {
         GAME(SemInputConstants.Command.GAME.toInt(), Touch.SET_GAME_MODE),
         SCAN_RATE(SemInputConstants.Command.SCAN_RATE.toInt(), Touch.SET_SCAN_RATE),
+        FAST_RESPONSE(SemInputConstants.Command.FAST_RESPONSE.toInt(), Touch.SET_FAST_RESPONSE),
         REFRESH_RATE(SemInputConstants.Command.REFRESH_RATE.toInt(), Touch.SET_REFRESH_RATE_MODE),
         GLOVE(SemInputConstants.Command.GLOVE.toInt(), Touch.SET_GLOVE_MODE),
         CLEAR_COVER(SemInputConstants.Command.CLEAR_COVER.toInt(), Touch.SET_CLEAR_COVER_MODE),
@@ -85,6 +87,7 @@ public class Touch extends SemInputDevice {
         STYLUS(SemInputConstants.Command.STYLUS.toInt(), Touch.SET_STYLUS_ENABLE),
         BRUSH(SemInputConstants.Command.BRUSH.toInt(), Touch.SET_BRUSH_ENABLE),
         AOD_RECT(SemInputConstants.Command.AOD_RECT.toInt(), Touch.SET_AOD_RECT),
+        AOD_NOTI_RECT(SemInputConstants.Command.AOD_NOTI_RECT.toInt(), Touch.SET_AOD_NOTI_RECT),
         AOD(SemInputConstants.Command.AOD.toInt(), Touch.SET_AOD_ENABLE),
         FOD(SemInputConstants.Command.FOD.toInt(), Touch.SET_FOD_ENABLE),
         FOD_ICON_VISIBLE(SemInputConstants.Command.FOD_ICON_VISIBLE.toInt(), Touch.SET_FOD_ICON_VISIBLE),
@@ -133,8 +136,7 @@ public class Touch extends SemInputDevice {
                 this.supportCommands.put(Integer.valueOf(command.getInt()), command.getName());
             }
         }
-        StringBuilder sb = this.stringBuilderForSupportCommands;
-        sb.delete(0, sb.length());
+        this.stringBuilderForSupportCommands.delete(0, this.stringBuilderForSupportCommands.length());
         int length = 0;
         for (String name : this.supportCommands.values()) {
             this.stringBuilderForSupportCommands.append(name);
@@ -203,8 +205,8 @@ public class Touch extends SemInputDevice {
 
     public int streamRawdata(int mode) {
         SemInputCommandService.Result result = new SemInputCommandService.Result();
-        runAndWaitOnThread(new StreamRawdataTask(mode, result), result);
-        return result.getInteger();
+        runOnThread(new StreamRawdataTask(mode, result), result);
+        return 1;
     }
 
     private final class StreamRawdataTask implements Runnable {

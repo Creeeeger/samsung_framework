@@ -25,126 +25,121 @@ public class SemInputExternalListener implements SemInputExternal.IExternalEvent
     private static final String SENSOR_WATCH_LISTENER = "SensorListenerWatchWrapper";
     private static final String TAG = "SemInputExternalListener";
     private Context context;
-    private StringBuilder dumpLog;
     private Handler mainHandler;
-    private final HashMap<SemInputExternal.Event, ArrayList> registeredList;
-    private final SemInputExternal.IServiceListener serviceListener;
-    private final Map<SemInputExternal.Event, String> supportList;
+    private final Map<SemInputExternal.Event, String> supportList = new HashMap() { // from class: com.samsung.android.hardware.secinputdev.external.SemInputExternalListener.1
+        {
+            put(SemInputExternal.Event.LISTENER_DISPLAY_STATE, SemInputExternalListener.DISPLAY_STATE_LISTENER);
+        }
+    };
+    private final HashMap<SemInputExternal.Event, ArrayList> registeredList = new HashMap<>();
+    private StringBuilder dumpLog = new StringBuilder();
+    private final SemInputExternal.IServiceListener serviceListener = new SemInputExternal.IServiceListener() { // from class: com.samsung.android.hardware.secinputdev.external.SemInputExternalListener.2
+        @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
+        public void onSemUEvent(String result) {
+            ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.OBSERVER_UEVENT);
+            if (list == null) {
+                return;
+            }
+            Iterator<SemInputExternal.IServiceListener> it = list.iterator();
+            while (it.hasNext()) {
+                SemInputExternal.IServiceListener element = it.next();
+                element.onSemUEvent(result);
+            }
+        }
+
+        @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
+        public void onDisplayStateChanged(boolean isEarly, int stateLogical, int statePhysical, int displayType) {
+            ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_DISPLAY_STATE);
+            if (list == null) {
+                return;
+            }
+            Iterator<SemInputExternal.IServiceListener> it = list.iterator();
+            while (it.hasNext()) {
+                SemInputExternal.IServiceListener element = it.next();
+                element.onDisplayStateChanged(isEarly, stateLogical, statePhysical, displayType);
+            }
+        }
+
+        @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
+        public void onDisplayChanged(int displayRotation) {
+            ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_DISPLAY);
+            if (list == null) {
+                return;
+            }
+            Iterator<SemInputExternal.IServiceListener> it = list.iterator();
+            while (it.hasNext()) {
+                SemInputExternal.IServiceListener element = it.next();
+                element.onDisplayChanged(displayRotation);
+            }
+        }
+
+        @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
+        public void onFoldStateChanged(boolean folded) {
+            ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_FOLD_STATE);
+            if (list == null) {
+                return;
+            }
+            Iterator<SemInputExternal.IServiceListener> it = list.iterator();
+            while (it.hasNext()) {
+                SemInputExternal.IServiceListener element = it.next();
+                element.onFoldStateChanged(folded);
+            }
+        }
+
+        @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
+        public void onLpScanSensorChanged(int mode) {
+            ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_PROX_LP_SCAN);
+            if (list == null) {
+                return;
+            }
+            Iterator<SemInputExternal.IServiceListener> it = list.iterator();
+            while (it.hasNext()) {
+                SemInputExternal.IServiceListener element = it.next();
+                element.onLpScanSensorChanged(mode);
+            }
+        }
+
+        @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
+        public void onDesktopModeStateChanged(int mode) {
+            ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_DEX);
+            if (list == null) {
+                return;
+            }
+            Iterator<SemInputExternal.IServiceListener> it = list.iterator();
+            while (it.hasNext()) {
+                SemInputExternal.IServiceListener element = it.next();
+                element.onDesktopModeStateChanged(mode);
+            }
+        }
+
+        @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
+        public void onBodyDetected(int mode) {
+            ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_SENSOR_WATCH);
+            if (list == null) {
+                return;
+            }
+            Iterator<SemInputExternal.IServiceListener> it = list.iterator();
+            while (it.hasNext()) {
+                SemInputExternal.IServiceListener element = it.next();
+                element.onBodyDetected(mode);
+            }
+        }
+    };
 
     public SemInputExternalListener(Context context, Handler handler) {
-        HashMap hashMap = new HashMap() { // from class: com.samsung.android.hardware.secinputdev.external.SemInputExternalListener.1
-            {
-                put(SemInputExternal.Event.LISTENER_DISPLAY_STATE, SemInputExternalListener.DISPLAY_STATE_LISTENER);
-            }
-        };
-        this.supportList = hashMap;
-        this.registeredList = new HashMap<>();
         this.context = null;
         this.mainHandler = null;
-        this.dumpLog = new StringBuilder();
-        this.serviceListener = new SemInputExternal.IServiceListener() { // from class: com.samsung.android.hardware.secinputdev.external.SemInputExternalListener.2
-            @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
-            public void onSemUEvent(String result) {
-                ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.OBSERVER_UEVENT);
-                if (list == null) {
-                    return;
-                }
-                Iterator<SemInputExternal.IServiceListener> it = list.iterator();
-                while (it.hasNext()) {
-                    SemInputExternal.IServiceListener element = it.next();
-                    element.onSemUEvent(result);
-                }
-            }
-
-            @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
-            public void onDisplayStateChanged(boolean isEarly, int stateLogical, int statePhysical, int displayType) {
-                ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_DISPLAY_STATE);
-                if (list == null) {
-                    return;
-                }
-                Iterator<SemInputExternal.IServiceListener> it = list.iterator();
-                while (it.hasNext()) {
-                    SemInputExternal.IServiceListener element = it.next();
-                    element.onDisplayStateChanged(isEarly, stateLogical, statePhysical, displayType);
-                }
-            }
-
-            @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
-            public void onDisplayChanged(int displayRotation) {
-                ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_DISPLAY);
-                if (list == null) {
-                    return;
-                }
-                Iterator<SemInputExternal.IServiceListener> it = list.iterator();
-                while (it.hasNext()) {
-                    SemInputExternal.IServiceListener element = it.next();
-                    element.onDisplayChanged(displayRotation);
-                }
-            }
-
-            @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
-            public void onFoldStateChanged(boolean folded) {
-                ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_FOLD_STATE);
-                if (list == null) {
-                    return;
-                }
-                Iterator<SemInputExternal.IServiceListener> it = list.iterator();
-                while (it.hasNext()) {
-                    SemInputExternal.IServiceListener element = it.next();
-                    element.onFoldStateChanged(folded);
-                }
-            }
-
-            @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
-            public void onLpScanSensorChanged(int mode) {
-                ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_PROX_LP_SCAN);
-                if (list == null) {
-                    return;
-                }
-                Iterator<SemInputExternal.IServiceListener> it = list.iterator();
-                while (it.hasNext()) {
-                    SemInputExternal.IServiceListener element = it.next();
-                    element.onLpScanSensorChanged(mode);
-                }
-            }
-
-            @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
-            public void onDesktopModeStateChanged(int mode) {
-                ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_DEX);
-                if (list == null) {
-                    return;
-                }
-                Iterator<SemInputExternal.IServiceListener> it = list.iterator();
-                while (it.hasNext()) {
-                    SemInputExternal.IServiceListener element = it.next();
-                    element.onDesktopModeStateChanged(mode);
-                }
-            }
-
-            @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IServiceListener
-            public void onBodyDetected(int mode) {
-                ArrayList<SemInputExternal.IServiceListener> list = (ArrayList) SemInputExternalListener.this.registeredList.get(SemInputExternal.Event.LISTENER_SENSOR_WATCH);
-                if (list == null) {
-                    return;
-                }
-                Iterator<SemInputExternal.IServiceListener> it = list.iterator();
-                while (it.hasNext()) {
-                    SemInputExternal.IServiceListener element = it.next();
-                    element.onBodyDetected(mode);
-                }
-            }
-        };
         this.context = context;
         this.mainHandler = handler;
         if (SemInputFeatures.IS_WEAROS && SemInputFeatures.SUPPORT_AWD) {
-            hashMap.put(SemInputExternal.Event.LISTENER_SENSOR_WATCH, SENSOR_WATCH_LISTENER);
+            this.supportList.put(SemInputExternal.Event.LISTENER_SENSOR_WATCH, SENSOR_WATCH_LISTENER);
             return;
         }
-        hashMap.put(SemInputExternal.Event.LISTENER_DISPLAY, DISPLAY_LISTENER);
-        hashMap.put(SemInputExternal.Event.OBSERVER_UEVENT, SEM_UEVENT_OBSERVER);
-        hashMap.put(SemInputExternal.Event.LISTENER_FOLD_STATE, FOLD_STATE_LISTENER);
-        hashMap.put(SemInputExternal.Event.LISTENER_DEX, DEX_LISTENER);
-        hashMap.put(SemInputExternal.Event.LISTENER_PROX_LP_SCAN, SENSOR_PROX_LP_LISTENER);
+        this.supportList.put(SemInputExternal.Event.LISTENER_DISPLAY, DISPLAY_LISTENER);
+        this.supportList.put(SemInputExternal.Event.OBSERVER_UEVENT, SEM_UEVENT_OBSERVER);
+        this.supportList.put(SemInputExternal.Event.LISTENER_FOLD_STATE, FOLD_STATE_LISTENER);
+        this.supportList.put(SemInputExternal.Event.LISTENER_DEX, DEX_LISTENER);
+        this.supportList.put(SemInputExternal.Event.LISTENER_PROX_LP_SCAN, SENSOR_PROX_LP_LISTENER);
     }
 
     public Map<SemInputExternal.Event, String> getSupportList() {
@@ -152,7 +147,9 @@ public class SemInputExternalListener implements SemInputExternal.IExternalEvent
     }
 
     public String getLog() {
-        return this.dumpLog.toString();
+        String log = this.dumpLog.toString();
+        this.dumpLog.delete(0, this.dumpLog.length());
+        return log;
     }
 
     @Override // com.samsung.android.hardware.secinputdev.external.SemInputExternal.IExternalEventRegister
@@ -199,9 +196,8 @@ public class SemInputExternalListener implements SemInputExternal.IExternalEvent
             String ret = (String) method.invoke(instance, new Object[0]);
             if (!ret.isEmpty()) {
                 logBuffer.append(className + " NOT registered: " + ret);
-            } else {
-                result = true;
             }
+            result = true;
         } catch (ClassNotFoundException e) {
             logBuffer.append(e.toString());
         } catch (InvocationTargetException e2) {

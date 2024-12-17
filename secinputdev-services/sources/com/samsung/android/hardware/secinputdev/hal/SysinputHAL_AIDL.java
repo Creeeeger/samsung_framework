@@ -30,64 +30,54 @@ public class SysinputHAL_AIDL implements SysinputHALInterface {
     private static final String SERVICE_NAME = "vendor.samsung.hardware.sysinput.ISehSysInputDev/default";
     private static final String TAG = "SysinputHAL_AIDL";
     private static final long TIMEOUT_SECONDS = 60;
-    private IBinder aidlCallback;
-    private SysinputHALCallback callback;
-    private final Map<Integer, Condition> deviceConditions;
-    private ISehSysInputDev halService;
-    private int halVersion;
-    private final Lock lock;
     private final ConcurrentHashMap<String, String> resultMap = new ConcurrentHashMap<>();
     private final SemInputDumpsysData timeoutData = new SemInputDumpsysData(50);
-    private final HashSet<String> timeoutKeys;
+    private final Lock lock = new ReentrantLock();
+    private final Map<Integer, Condition> deviceConditions = new HashMap();
+    private final HashSet<String> timeoutKeys = new HashSet<>();
+    private ISehSysInputDev halService = null;
+    private int halVersion = 0;
+    private SysinputHALCallback callback = null;
+    private IBinder aidlCallback = new ISehSysInputCallback.Stub() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_AIDL.1
+        @Override // vendor.samsung.hardware.sysinput.ISehSysInputCallback
+        public void onReportInformation(int inputType, String data) throws RemoteException {
+            int type = SysinputHAL_AIDL.convertInputDeviceTypeToDevid(Integer.valueOf(inputType));
+            SysinputHAL_AIDL.this.callback.onReportInformationAidl(type, data);
+        }
+
+        @Override // vendor.samsung.hardware.sysinput.ISehSysInputCallback
+        public void onReportRawData(int inputType, int count, int[] list) throws RemoteException {
+            int type = SysinputHAL_AIDL.convertInputDeviceTypeToDevid(Integer.valueOf(inputType));
+            SysinputHAL_AIDL.this.callback.onReportRawData(type, count, list);
+        }
+
+        @Override // vendor.samsung.hardware.sysinput.ISehSysInputCallback
+        public int getInterfaceVersion() {
+            return 2;
+        }
+
+        @Override // vendor.samsung.hardware.sysinput.ISehSysInputCallback
+        public String getInterfaceHash() {
+            return "ebc882a8076245906ae71306e8e0706f50e728ae";
+        }
+    };
 
     public SysinputHAL_AIDL() {
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.lock = reentrantLock;
-        HashMap hashMap = new HashMap();
-        this.deviceConditions = hashMap;
-        this.timeoutKeys = new HashSet<>();
-        this.halService = null;
-        this.halVersion = 0;
-        this.callback = null;
-        this.aidlCallback = new ISehSysInputCallback.Stub() { // from class: com.samsung.android.hardware.secinputdev.hal.SysinputHAL_AIDL.1
-            @Override // vendor.samsung.hardware.sysinput.ISehSysInputCallback
-            public void onReportInformation(int inputType, String data) throws RemoteException {
-                int type = SysinputHAL_AIDL.convertInputDeviceTypeToDevid(Integer.valueOf(inputType));
-                SysinputHAL_AIDL.this.callback.onReportInformationAidl(type, data);
-            }
-
-            @Override // vendor.samsung.hardware.sysinput.ISehSysInputCallback
-            public void onReportRawData(int inputType, int count, int[] list) throws RemoteException {
-                int type = SysinputHAL_AIDL.convertInputDeviceTypeToDevid(Integer.valueOf(inputType));
-                SysinputHAL_AIDL.this.callback.onReportRawData(type, count, list);
-            }
-
-            @Override // vendor.samsung.hardware.sysinput.ISehSysInputCallback
-            public int getInterfaceVersion() {
-                return 2;
-            }
-
-            @Override // vendor.samsung.hardware.sysinput.ISehSysInputCallback
-            public String getInterfaceHash() {
-                return "ebc882a8076245906ae71306e8e0706f50e728ae";
-            }
-        };
         if (getService() == null) {
             throw new NoSuchElementException();
         }
-        hashMap.put(1, reentrantLock.newCondition());
-        hashMap.put(2, reentrantLock.newCondition());
-        hashMap.put(11, reentrantLock.newCondition());
-        hashMap.put(31, reentrantLock.newCondition());
-        hashMap.put(41, reentrantLock.newCondition());
+        this.deviceConditions.put(1, this.lock.newCondition());
+        this.deviceConditions.put(2, this.lock.newCondition());
+        this.deviceConditions.put(11, this.lock.newCondition());
+        this.deviceConditions.put(31, this.lock.newCondition());
+        this.deviceConditions.put(41, this.lock.newCondition());
     }
 
     private synchronized ISehSysInputDev getService() {
         if (this.halService == null) {
             try {
-                ISehSysInputDev asInterface = ISehSysInputDev.Stub.asInterface(ServiceManager.getService(SERVICE_NAME));
-                this.halService = asInterface;
-                if (asInterface == null) {
+                this.halService = ISehSysInputDev.Stub.asInterface(ServiceManager.getService(SERVICE_NAME));
+                if (this.halService == null) {
                     Log.w(TAG, "getService: halService is null");
                     return null;
                 }
@@ -95,9 +85,8 @@ public class SysinputHAL_AIDL implements SysinputHALInterface {
                 getVersion();
                 HALDeathReceiver deathReceiver = new HALDeathReceiver();
                 try {
-                    ISehSysInputDev iSehSysInputDev = this.halService;
-                    if (iSehSysInputDev != null) {
-                        iSehSysInputDev.asBinder().linkToDeath(deathReceiver, 0);
+                    if (this.halService != null) {
+                        this.halService.asBinder().linkToDeath(deathReceiver, 0);
                         Log.i(TAG, "getService:linkToDeath");
                     }
                 } catch (Exception e) {

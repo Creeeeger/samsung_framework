@@ -65,8 +65,7 @@ public class SysinputHAL_V1_3 extends SysinputHAL_V1_2 implements SysinputHALInt
     }
 
     private synchronized ISehSysInputDev getService() {
-        ISehSysInputDev iSehSysInputDev = this.halService;
-        if (iSehSysInputDev == null || !super.isSameService((vendor.samsung.hardware.sysinput.V1_2.ISehSysInputDev) iSehSysInputDev)) {
+        if (this.halService == null || !super.isSameService((vendor.samsung.hardware.sysinput.V1_2.ISehSysInputDev) this.halService)) {
             try {
                 setService(ISehSysInputDev.getService());
                 if (this.halService == null) {
@@ -77,9 +76,8 @@ public class SysinputHAL_V1_3 extends SysinputHAL_V1_2 implements SysinputHALInt
                 if (getClass().getSimpleName().equals(this.TAG)) {
                     HALDeathReceiver deathReceiver = new HALDeathReceiver();
                     try {
-                        ISehSysInputDev iSehSysInputDev2 = this.halService;
-                        if (iSehSysInputDev2 != null) {
-                            iSehSysInputDev2.linkToDeath(deathReceiver, 42L);
+                        if (this.halService != null) {
+                            this.halService.linkToDeath(deathReceiver, 42L);
                             Log.i(this.TAG, "getService: register linkToDeath");
                         }
                     } catch (Exception e) {
@@ -102,10 +100,10 @@ public class SysinputHAL_V1_3 extends SysinputHAL_V1_2 implements SysinputHALInt
             return;
         }
         super.setService((vendor.samsung.hardware.sysinput.V1_2.ISehSysInputDev) halService);
-        ISehSysInputDev tempService = this.halService;
-        if (tempService == null) {
+        if (this.halService == null) {
             this.halService = halService;
         } else {
+            ISehSysInputDev tempService = this.halService;
             synchronized (tempService) {
                 try {
                     this.halService = halService;
@@ -147,11 +145,10 @@ public class SysinputHAL_V1_3 extends SysinputHAL_V1_2 implements SysinputHALInt
         if (!superResult) {
             return false;
         }
-        ISehSysInputDev iSehSysInputDev = this.halService;
-        if (iSehSysInputDev == null) {
+        if (this.halService == null) {
             return false;
         }
-        synchronized (iSehSysInputDev) {
+        synchronized (this.halService) {
             try {
                 if (this.halService == halService) {
                     return true;

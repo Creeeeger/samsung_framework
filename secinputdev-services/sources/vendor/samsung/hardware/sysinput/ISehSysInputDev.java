@@ -187,111 +187,111 @@ public interface ISehSysInputDev extends IInterface {
             if (code >= 1 && code <= TRANSACTION_getInterfaceVersion) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == TRANSACTION_getInterfaceVersion) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == TRANSACTION_getInterfaceHash) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case TRANSACTION_getInterfaceHash /* 16777214 */:
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int[] _result = getDeviceList(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeIntArray(_result);
                     return true;
-                case TRANSACTION_getInterfaceVersion /* 16777215 */:
+                case 2:
+                    ISehSysInputCallback _arg02 = ISehSysInputCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result2 = registerCallback(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeInt(_result2);
                     return true;
-                case 1598968902:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result3 = streamRawdata(_arg03, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int[] _arg12 = data.createIntArray();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = injectRawdata(_arg04, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg13 = data.readInt();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result5 = activate(_arg05, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg14 = data.readString();
+                    SehIntStringParcel _arg23 = new SehIntStringParcel();
+                    data.enforceNoDataAvail();
+                    runCommand(_arg06, _arg14, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_arg23, 1);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg15 = data.readInt();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result6 = setProperty(_arg07, _arg15, _arg24);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result7 = getProperty(_arg08, _arg16);
+                    reply.writeNoException();
+                    reply.writeString(_result7);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    SehIntStringParcel _arg17 = new SehIntStringParcel();
+                    data.enforceNoDataAvail();
+                    getKeyState(_arg09, _arg17);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_arg17, 1);
+                    return true;
+                case 10:
+                    SehIntStringParcel _arg010 = new SehIntStringParcel();
+                    data.enforceNoDataAvail();
+                    readTaas(_arg010);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_arg010, 1);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result8 = writeTaas(_arg011);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int[] _result = getDeviceList(_arg0);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result);
-                            return true;
-                        case 2:
-                            ISehSysInputCallback _arg02 = ISehSysInputCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result2 = registerCallback(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result3 = streamRawdata(_arg03, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int[] _arg12 = data.createIntArray();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result4 = injectRawdata(_arg04, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg13 = data.readInt();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result5 = activate(_arg05, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg14 = data.readString();
-                            SehIntStringParcel _arg23 = new SehIntStringParcel();
-                            data.enforceNoDataAvail();
-                            runCommand(_arg06, _arg14, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg23, 1);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg15 = data.readInt();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result6 = setProperty(_arg07, _arg15, _arg24);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result7 = getProperty(_arg08, _arg16);
-                            reply.writeNoException();
-                            reply.writeString(_result7);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            SehIntStringParcel _arg17 = new SehIntStringParcel();
-                            data.enforceNoDataAvail();
-                            getKeyState(_arg09, _arg17);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg17, 1);
-                            return true;
-                        case 10:
-                            SehIntStringParcel _arg010 = new SehIntStringParcel();
-                            data.enforceNoDataAvail();
-                            readTaas(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_arg010, 1);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result8 = writeTaas(_arg011);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 

@@ -21,9 +21,9 @@ public class SemInputSettingObserver {
     private static final String TAG = "SemInputSettingObserver";
     private static final String VIRTUAL_FORCE_EANBLE = "virtual_force_enable";
     private static volatile SemInputSettingObserver uniqueInstance;
-    private SemInputSettingObserverSetup availableMap;
     private final Context context;
     private final ArrayList<ContentObserver> observers = new ArrayList<>();
+    private SemInputSettingObserverSetup availableMap = new SemInputSettingObserverSetup();
 
     public interface HandlerMessage {
         public static final int AUTO_WATER_DETECTION = 81;
@@ -52,10 +52,8 @@ public class SemInputSettingObserver {
     }
 
     private SemInputSettingObserver(Context context) {
-        SemInputSettingObserverSetup semInputSettingObserverSetup = new SemInputSettingObserverSetup();
-        this.availableMap = semInputSettingObserverSetup;
         this.context = context;
-        semInputSettingObserverSetup.printSettings();
+        this.availableMap.printSettings();
     }
 
     public static SemInputSettingObserver getInstance(Context context) {
@@ -105,11 +103,11 @@ public class SemInputSettingObserver {
         }
         Log.i(TAG, "addObserver: " + key + "(#" + handlerMessageWhat + ")");
         try {
-            switch (AnonymousClass1.$SwitchMap$com$samsung$android$hardware$secinputdev$SemInputSettingObserver$ValueType[valueType.ordinal()]) {
-                case 1:
+            switch (valueType) {
+                case INTEGER:
                     observer = new SettingObserver(handler, handlerMessageWhat, key, ((Integer) defaultValue).intValue());
                     break;
-                case 2:
+                case STRING:
                     observer = new SettingObserver(handler, handlerMessageWhat, key, (String) defaultValue);
                     break;
                 default:
@@ -126,24 +124,6 @@ public class SemInputSettingObserver {
             this.observers.add(observer);
         } catch (Exception e) {
             SemInputDeviceManagerService.loggingException(TAG, "addObserver", e);
-        }
-    }
-
-    /* renamed from: com.samsung.android.hardware.secinputdev.SemInputSettingObserver$1, reason: invalid class name */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputSettingObserver$ValueType;
-
-        static {
-            int[] iArr = new int[ValueType.values().length];
-            $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputSettingObserver$ValueType = iArr;
-            try {
-                iArr[ValueType.INTEGER.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$hardware$secinputdev$SemInputSettingObserver$ValueType[ValueType.STRING.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
         }
     }
 
@@ -184,11 +164,11 @@ public class SemInputSettingObserver {
 
         @Override // android.database.ContentObserver
         public void onChange(boolean selfChange) {
-            switch (AnonymousClass1.$SwitchMap$com$samsung$android$hardware$secinputdev$SemInputSettingObserver$ValueType[this.valueType.ordinal()]) {
-                case 1:
+            switch (this.valueType) {
+                case INTEGER:
                     updateInt();
                     break;
-                case 2:
+                case STRING:
                     updateString();
                     break;
                 default:
@@ -199,10 +179,9 @@ public class SemInputSettingObserver {
 
         public void updateInt() {
             Message message = this.handler.obtainMessage(this.messageWhat);
-            int i = this.messageWhat;
-            if (i > SemInputSettingObserver.HANDLER_GLOBAL_START) {
+            if (this.messageWhat > SemInputSettingObserver.HANDLER_GLOBAL_START) {
                 message.arg1 = Settings.Global.getInt(SemInputSettingObserver.this.context.getContentResolver(), this.key, this.defaultValueInt);
-            } else if (i > 100) {
+            } else if (this.messageWhat > 100) {
                 message.arg1 = Settings.Secure.getIntForUser(SemInputSettingObserver.this.context.getContentResolver(), this.key, this.defaultValueInt, -2);
             } else {
                 message.arg1 = Settings.System.getIntForUser(SemInputSettingObserver.this.context.getContentResolver(), this.key, this.defaultValueInt, -2);
@@ -213,10 +192,9 @@ public class SemInputSettingObserver {
         public void updateString() {
             Message message = this.handler.obtainMessage(this.messageWhat);
             Bundle data = new Bundle();
-            int i = this.messageWhat;
-            if (i > SemInputSettingObserver.HANDLER_GLOBAL_START) {
+            if (this.messageWhat > SemInputSettingObserver.HANDLER_GLOBAL_START) {
                 data.putString(SemInputSettingObserver.STRING_VALUE_KEY, Settings.Global.getString(SemInputSettingObserver.this.context.getContentResolver(), this.key));
-            } else if (i > 100) {
+            } else if (this.messageWhat > 100) {
                 data.putString(SemInputSettingObserver.STRING_VALUE_KEY, Settings.Secure.getString(SemInputSettingObserver.this.context.getContentResolver(), this.key));
             } else {
                 data.putString(SemInputSettingObserver.STRING_VALUE_KEY, Settings.System.getString(SemInputSettingObserver.this.context.getContentResolver(), this.key));

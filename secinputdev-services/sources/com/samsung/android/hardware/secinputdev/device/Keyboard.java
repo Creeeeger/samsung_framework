@@ -1,13 +1,13 @@
 package com.samsung.android.hardware.secinputdev.device;
 
 /* loaded from: classes.dex */
-public class Keyboard extends SemInputDevice {
-    public Keyboard(String name, int devid, int feature, String cmdlist) {
-        super(name, devid, feature, cmdlist);
+public class NotDefined extends SemInputDevice {
+    public NotDefined() {
+        super("NotDefined", 0, 0, "NG");
     }
 
     @Override // com.samsung.android.hardware.secinputdev.device.SemInputDevice
-    protected boolean supportActivate() {
-        return true;
+    public String toString() {
+        return this.name + "(" + this.devid + ")";
     }
 }

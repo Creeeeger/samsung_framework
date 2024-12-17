@@ -22,17 +22,16 @@ public class DisplayListenerWrapper extends ExternalService {
         this.displayInfo = new DisplayInfo();
         this.currentRotation = -1;
         this.displayListener = new AnonymousClass1();
-        this.isReverseDefaultRotation = context.getResources().getBoolean(R.bool.config_notificationHeaderClickableForExpand);
+        this.isReverseDefaultRotation = context.getResources().getBoolean(R.bool.config_shortPressEarlyOnStemPrimary);
     }
 
     @Override // com.samsung.android.hardware.secinputdev.external.ExternalService
     public String register() throws Exception {
-        DisplayManager displayManager = (DisplayManager) this.context.getSystemService("display");
-        this.displayManager = displayManager;
-        if (displayManager == null) {
+        this.displayManager = (DisplayManager) this.context.getSystemService("display");
+        if (this.displayManager == null) {
             throw new Exception("DisplayManager is null");
         }
-        displayManager.registerDisplayListener(this.displayListener, null);
+        this.displayManager.registerDisplayListener(this.displayListener, null);
         return "";
     }
 

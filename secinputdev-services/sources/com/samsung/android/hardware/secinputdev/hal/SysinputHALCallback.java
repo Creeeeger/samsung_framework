@@ -34,24 +34,18 @@ public class SysinputHALCallback {
     }
 
     public void onReportInformation(int type, String data) {
-        SemInputDeviceRawdataService semInputDeviceRawdataService = this.rawdataServices[type];
-        if (semInputDeviceRawdataService != null) {
-            semInputDeviceRawdataService.onReportInformation(data);
+        if (this.rawdataServices[type] != null) {
+            this.rawdataServices[type].onReportInformation(data);
         }
     }
 
     public void onReportInformationAidl(int type, String data) {
         if (SemInputDeviceManager.REPORT_INFO_HANDEDGE.equals(data)) {
-            SemInputDeviceRawdataService semInputDeviceRawdataService = this.rawdataServices[type];
-            if (semInputDeviceRawdataService != null) {
-                semInputDeviceRawdataService.onReportInformation(data);
-                return;
+            if (this.rawdataServices[type] != null) {
+                this.rawdataServices[type].onReportInformation(data);
             }
-            return;
-        }
-        SysinputHALInterface sysinputHALInterface = this.sysinputHAL;
-        if (sysinputHALInterface != null) {
-            sysinputHALInterface.onReportInformation(type, data);
+        } else if (this.sysinputHAL != null) {
+            this.sysinputHAL.onReportInformation(type, data);
         }
     }
 
@@ -66,9 +60,8 @@ public class SysinputHALCallback {
     }
 
     public void onReportRawData(int type, int count, int[] list) {
-        SemInputDeviceRawdataService semInputDeviceRawdataService = this.rawdataServices[type];
-        if (semInputDeviceRawdataService != null) {
-            semInputDeviceRawdataService.onReportRawData(count, list);
+        if (this.rawdataServices[type] != null) {
+            this.rawdataServices[type].onReportRawData(count, list);
         }
     }
 }

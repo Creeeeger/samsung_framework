@@ -53,7 +53,9 @@ public class SemInputConstants {
         BODY_DETECTION(43, false, false),
         AWD(44, false, false),
         NFC_FIELD(45, false, false),
-        SPEN_SET_WIRELESS_CHARGER_TX_ID(46, false, false);
+        SPEN_SET_WIRELESS_CHARGER_TX_ID(46, false, false),
+        AOD_NOTI_RECT(47, true, false),
+        FAST_RESPONSE(48, false, true);
 
         public static final Parcelable.Creator<Command> CREATOR = new Parcelable.Creator<Command>() { // from class: com.samsung.android.hardware.secinputdev.SemInputConstants.Command.1
             /* JADX WARN: Can't rename method to resolve collision */
